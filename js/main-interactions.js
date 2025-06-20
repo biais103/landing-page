@@ -6,7 +6,6 @@
 // DOM 로드 완료 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
     initScrollInteractions();
-    initCTAButton();
     initTextAnimations();
     initBenefitSectionAnimations();
     initFeaturesSectionAnimations();
@@ -39,33 +38,7 @@ function initScrollInteractions() {
     });
 }
 
-// CTA 버튼 인터랙션 초기화
-function initCTAButton() {
-    const ctaButton = document.querySelector('.whats-cta');
-    
-    if (!ctaButton) return;
-    
-    // Enhanced CTA button interaction
-    ctaButton.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-2px) scale(1.05)';
-    });
-    
-    ctaButton.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0) scale(1)';
-    });
-    
-    // Smooth scroll to benefit section
-    ctaButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        const benefitSection = document.querySelector('.benefit-section');
-        if (benefitSection) {
-            benefitSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-}
+
 
 // 텍스트 애니메이션 초기화
 function initTextAnimations() {
@@ -118,19 +91,7 @@ function initBenefitSectionAnimations() {
     
     headlineObserver.observe(benefitHeadline);
     
-    // 화살표 클릭 시 features 섹션으로 스크롤
-    const scrollArrow = document.querySelector('.scroll-arrow');
-    if (scrollArrow) {
-        scrollArrow.addEventListener('click', () => {
-            const featuresSection = document.querySelector('.features-section');
-            if (featuresSection) {
-                featuresSection.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    }
+
     
     // 추가적인 스크롤 효과 (시차 효과) - 쓰로틀링 적용
     let isScrolling = false;

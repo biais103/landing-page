@@ -13,4 +13,5 @@
     
     --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     --global-responsive-content-max-width: 1260px;
+    --global-responsive-content-super-width: 1920px;
 }
