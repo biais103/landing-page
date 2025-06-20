@@ -1,0 +1,50 @@
+/* Features Section 기본 스타일 */
+.features-screen__title {
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    background-color: var(--blue);
+    margin-bottom: 30px;
+}
+
+.features-screen__title-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: 600;;
+    color: white;
+    text-align: center;
+}
+
+.features-screen {
+    width: 100vw;
+    height: 100vh;
+}
+
+.feature-section__header {
+    max-width: var(--global-responsive-content-max-width);
+    margin: 0 auto;
+}
+
+.feature-section__header-title {
+    display: block;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: white;
+    padding-bottom: 40px;
+}
+
+.feature-section__container {
+    position: relative;
+}
+
+.feature-section__container-border {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    max-width: var(--global-responsive-content-max-width);
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}

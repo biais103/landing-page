@@ -1,0 +1,16 @@
+:root {
+    --horizontal-space: 25px;
+    --main-border: 1px solid rgba(0, 0, 0, 0.2);
+    --border-color: #e0e0e0;
+
+    --color-black: rgba(0, 0, 0, 0.8);
+    --color-blue: #003962;
+    --color-point: #620039;
+    --color-green: #396200;
+    --color-yellow: #d7be00;
+    --color-gray: rgba(255,255,255,0.8);
+    --color-dark-gray: #222222;
+    
+    --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --global-responsive-content-max-width: 1260px;
+}

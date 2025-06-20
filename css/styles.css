@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import "reset.css";
+@import "variables.css";
+
+/* Components */
+@import "components/header_nav.css";
+@import "components/feature.css";
+@import "components/rotate-3d.css";
+/* Screens */
+@import "screens/index.css";
+
+body {
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    color: white;
+    background-color: black;
+}
