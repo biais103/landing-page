@@ -8,6 +8,7 @@
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
     position: relative;
     overflow: hidden;
+    scroll-margin-top: 60px; /* 고정 헤더 높이만큼 오프셋 추가 */
 }
 
 .whats-section::before {
@@ -196,6 +197,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    scroll-margin-top: 60px; /* 고정 헤더 높이만큼 오프셋 추가 */
 }
 
 /* Apple-style Headline */
@@ -704,6 +706,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    scroll-margin-top: 60px; /* 고정 헤더 높이만큼 오프셋 추가 */
 }
 
 /* Features Headline */
@@ -966,6 +969,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    scroll-margin-top: 60px; /* 고정 헤더 높이만큼 오프셋 추가 */
 }
 
 /* Contact Headline */

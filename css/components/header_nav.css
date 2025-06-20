@@ -1,13 +1,19 @@
 /* Header Navigation Component */
 .header-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px 20px;
   box-sizing: border-box;
   height: 60px;
-  max-width: var(--global-responsive-content-max-width);
-  margin: 0px auto;
+  background-color: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  width: 100%;
 }
 
 /* Logo Section */

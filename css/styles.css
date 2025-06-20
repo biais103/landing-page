@@ -9,6 +9,10 @@
 /* Screens */
 @import "screens/index.css";
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: "Open Sans", sans-serif;
     font-optical-sizing: auto;
@@ -17,4 +21,5 @@ body {
     font-variation-settings: "wdth" 100;
     color: white;
     background-color: black;
+    padding-top: 60px; /* 고정 헤더 높이만큼 패딩 추가 */
 }
