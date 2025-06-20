@@ -24,3 +24,41 @@ body {
     background-color: black;
     padding-top: 60px; /* 고정 헤더 높이만큼 패딩 추가 */
 }
+
+/* FontAwesome attribution 숨기기 */
+.fa-solid,
+.fa-regular,
+.fa-light,
+.fa-thin,
+.fa-duotone,
+.fa-brands {
+    font-display: block;
+}
+
+/* FontAwesome에서 자동 생성되는 attribution 요소 숨기기 */
+body::after,
+html::after {
+    display: none !important;
+}
+
+/* FontAwesome copyright 텍스트 숨기기 */
+[data-fa-pseudo-element]::before,
+[data-fa-pseudo-element]::after {
+    display: none !important;
+}
+
+/* FontAwesome의 자동 삽입 요소들 숨기기 */
+script + div[style*="position: fixed"],
+div[style*="font-family: FontAwesome"],
+div[style*="position: fixed"][style*="bottom: 0"],
+div[style*="z-index: 999999"],
+div[style*="font-family: 'Font Awesome'"],
+div[style*="Copyright 2024 Fonticons"],
+body > div:last-child[style*="position: fixed"],
+body > div[style*="overflow: hidden"][style*="position: fixed"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+}

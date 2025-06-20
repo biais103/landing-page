@@ -32,6 +32,8 @@
 .header-nav__nav {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .header-nav__list {
