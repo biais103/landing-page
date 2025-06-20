@@ -17,6 +17,21 @@
     </script>
 </head>
 <body>
+    <!-- 모바일 세로모드 회전 안내 오버레이 -->
+    <div class="rotate-overlay" id="rotate-overlay">
+        <div class="rotate-overlay__content">
+            <div class="rotate-overlay__icon">
+                <i class="fa-solid fa-rotate-left"></i>
+            </div>
+            <div class="rotate-overlay__title">
+                스마트폰을 가로모드로 전환해주세요!
+            </div>
+            <div class="rotate-overlay__subtitle">
+                더 나은 사용자 경험을 위해 가로모드를 권장합니다
+            </div>
+        </div>
+    </div>
+
     <header class="header-nav">
         <nav class="header-nav__nav">
             <ul class="header-nav__list">
@@ -61,7 +76,7 @@
         <section class="benefit-section" id="benefit">
             <div class="benefit-headline">
                 <h2 class="benefit-headline__title">
-                    왼쪽과 오른쪽 중 어느 곳에 시선이 머무르시나요?
+                    둘 중 어느 곳에 시선이 머무르시나요?
                 </h2>
             </div>
             <div class="benefit-container">
@@ -170,5 +185,7 @@
     <!-- ES 모듈 방식으로 분리된 JS 파일 로드 -->
     <script type="module" src="./js/main-interactions.js"></script>
     <script type="module" src="./js/rotate-3d.js"></script>
+    <script src="./js/rotate-overlay.js"></script>
+    <script src="https://kit.fontawesome.com/a80e3048e2.js" crossorigin="anonymous"></script>
 </body>
 </html>

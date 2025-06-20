@@ -6,6 +6,7 @@
 @import "components/header_nav.css";
 @import "components/feature.css";
 @import "components/rotate-3d.css";
+@import "components/rotate-overlay.css";
 /* Screens */
 @import "screens/index.css";
 
