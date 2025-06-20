@@ -34,11 +34,11 @@
     align-items: center;
 }
 
-.rotate-overlay__icon i {
-    font-size: 80px;
+.rotate-overlay__icon svg {
+    width: 80px;
+    height: 80px;
     display: block;
-    text-shadow: 0 4px 8px rgba(96, 165, 250, 0.3);
-    filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.5));
+    filter: drop-shadow(0 4px 8px rgba(96, 165, 250, 0.3));
 }
 
 @keyframes rotateIcon {
