@@ -11,7 +11,7 @@
 @import "screens/index.css";
 
 html {
-    scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */ /* 딱딱한 스냅을 위해 제거 */
 }
 
 body {

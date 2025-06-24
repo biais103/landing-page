@@ -1,14 +1,104 @@
-/* Whats Section - Apple Style Interactive Design */
-.whats-section {
-    min-height: 100vh;
+/* Intro Section - 전체 화면 덮는 인트로 */
+.intro-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px;
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-    position: relative;
+    z-index: 1000;
     overflow: hidden;
-    scroll-margin-top: 60px; /* 고정 헤더 높이만큼 오프셋 추가 */
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+.intro-section.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.intro-container {
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.click-button {
+    position: absolute;
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: #ffffff;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10;
+    animation: fadeInButton 0.5s ease-out 1.5s forwards;
+}
+
+.click-button:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+@keyframes fadeInButton {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Main Screen - 전체 메인 콘텐츠 */
+.main-screen {
+    position: relative;
+    z-index: 500;
+    background: #000000;
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.main-screen.fade-in {
+    opacity: 1;
+}
+
+/* Whats Sticky Container - 스티키 스크롤을 위한 컨테이너 */
+.whats-sticky-container {
+    position: relative;
+    height: 400vh; /* 4개 섹션 × 100vh */
+}
+
+/* Whats Section - Apple Style Interactive Design with Sticky */
+.whats-section {
+    position: sticky;
+    top: 60px; /* header-nav 높이만큼 여백 */
+    height: calc(100vh - 60px); /* header 높이만큼 빼기 */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.whats-section.active {
+    display: flex;
+    z-index: 2;
+}
+
+.whats-section.exit {
+    display: none;
+}
+
+/* 스크롤 스페이서 - 마지막 섹션이 완전히 표시될 수 있도록 */
+.whats-scroll-spacer {
+    height: 100vh;
 }
 
 .whats-section::before {
@@ -34,9 +124,130 @@
     text-align: center;
     position: relative;
     z-index: 2;
+    /* opacity: 0; */
+    /* transform: translateY(30px); */
+    /* animation: fadeInUp 1.2s ease-out 0.3s forwards; */
+    opacity: 1;
+    transform: none;
+    animation: none;
+}
+
+/* 필요하다면 섹션 전환 시 등장 애니메이션만(예시) */
+.whats-section.active .whats-container {
+    opacity: 1;
+    transform: none;
+    animation: none;
+}
+
+/* 우주의 별 같은 호흡 효과 */
+.cosmic-breathing-star {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-out;
+}
+
+.cosmic-breathing-star.explode {
     opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 1.2s ease-out 0.3s forwards;
+    transform: scale(1);
+    transition: opacity 1.2s ease-out 0.8s;
+}
+
+.breathing-star {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 1) 0%,
+        rgba(147, 197, 253, 0.9) 30%,
+        rgba(59, 130, 246, 0.7) 60%,
+        transparent 100%
+    );
+    box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(147, 197, 253, 0.6),
+        0 0 60px rgba(59, 130, 246, 0.4),
+        inset 0 0 10px rgba(255, 255, 255, 0.5);
+    
+    /* 통합된 호흡 애니메이션 - 크기, 밝기, 움직임이 모두 동기화됨 */
+    animation: unifiedStarBreathe 4s ease-in-out infinite var(--delay);
+    
+    /* 블러 효과로 글로시한 느낌 */
+    filter: blur(0.5px);
+    
+    /* 3D 변형을 위한 설정 */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transform-origin: center center;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 별 폭발 애니메이션 */
+.breathing-star.exploding {
+    animation: starExplosion 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 간단하고 부드러운 호흡 애니메이션 */
+@keyframes unifiedStarBreathe {
+    0%, 100% {
+        transform: scale(0.3) translateY(10px);
+        opacity: 0;
+        box-shadow: 
+            0 0 8px rgba(255, 255, 255, 0.4),
+            0 0 16px rgba(147, 197, 253, 0.3),
+            0 0 24px rgba(59, 130, 246, 0.2);
+    }
+    
+    50% {
+        transform: scale(1.5) translateY(-15px);
+        opacity: 1;
+        box-shadow: 
+            0 0 40px rgba(255, 255, 255, 1),
+            0 0 60px rgba(147, 197, 253, 0.8),
+            0 0 80px rgba(59, 130, 246, 0.6),
+            0 0 100px rgba(147, 51, 234, 0.4);
+    }
+}
+
+/* 별 폭발 애니메이션 - 화면을 가득 채울 정도로 확대 */
+@keyframes starExplosion {
+    0% {
+        transform: scale(1.5);
+        opacity: 1;
+        box-shadow: 
+            0 0 40px rgba(255, 255, 255, 1),
+            0 0 60px rgba(147, 197, 253, 0.8),
+            0 0 80px rgba(59, 130, 246, 0.6),
+            0 0 100px rgba(147, 51, 234, 0.4);
+    }
+    
+    50% {
+        transform: scale(150);
+        opacity: 0.8;
+        box-shadow: 
+            0 0 200px rgba(255, 255, 255, 0.9),
+            0 0 400px rgba(147, 197, 253, 0.7),
+            0 0 600px rgba(59, 130, 246, 0.5),
+            0 0 800px rgba(147, 51, 234, 0.3);
+    }
+    
+    100% {
+        transform: scale(200);
+        opacity: 0;
+        box-shadow: 
+            0 0 400px rgba(255, 255, 255, 0.5),
+            0 0 800px rgba(147, 197, 253, 0.3),
+            0 0 1200px rgba(59, 130, 246, 0.2),
+            0 0 1600px rgba(147, 51, 234, 0.1);
+    }
 }
 
 @keyframes fadeInUp {
@@ -53,11 +264,15 @@
     }
 }
 
+#whats-5__container {
+    padding-bottom: 140px;
+}
+
 .whats-main-title {
     font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 700;
     line-height: 1.1;
-    margin-bottom: 3rem;
+    padding-bottom: 140px;
     background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -73,8 +288,8 @@
 .whats-subtitle {
     font-size: clamp(1.2rem, 3vw, 1.8rem);
     font-weight: 400;
+    padding-bottom: 140px;
     color: #d1d5db;
-    margin-bottom: 2.5rem;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 1.2s ease-out 0.6s forwards;
@@ -83,8 +298,8 @@
 .whats-description {
     font-size: clamp(1rem, 2.5vw, 1.4rem);
     font-weight: 300;
+    padding-bottom: 140px;
     color: #9ca3af;
-    margin-bottom: 2.5rem;
     line-height: 1.6;
     opacity: 0;
     transform: translateY(20px);
@@ -115,20 +330,6 @@
 @media (max-width: 768px) {
     .whats-section {
         padding: 40px 16px;
-    }
-    
-    .whats-main-title {
-        margin-bottom: 1.5rem;
-    }
-    
-    .whats-subtitle,
-    .whats-description,
-    .whats-highlight {
-        margin-bottom: 2rem;
-    }
-    
-    .whats-scroll-arrow {
-        margin-top: 2rem;
     }
 }
 
@@ -211,9 +412,6 @@
     opacity: 1;
 }
 
-
-
-
 /* Subtle animation for the headline */
 @keyframes subtleFloat {
     0%, 100% { transform: translateY(0px); }
@@ -294,23 +492,8 @@
     left: 100%;
 }
 
-/* Benefit To Feature Arrow */
-.benefit-description__to-feature {
-    max-width: var(--global-responsive-content-max-width);
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 80px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
 
-.benefit-description__to-feature.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
+/* Scroll Arrow */
 .scroll-arrow {
     display: flex;
     flex-direction: column;
@@ -334,8 +517,6 @@
     animation: bounceUpDown 2s ease-in-out infinite;
 }
 
-
-
 .scroll-arrow__text {
     color: #9ca3af;
     font-size: 0.9rem;
@@ -343,8 +524,6 @@
     text-align: center;
     transition: all 0.3s ease;
 }
-
-
 
 @keyframes bounceUpDown {
     0%, 100% {

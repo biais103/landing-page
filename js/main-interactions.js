@@ -3,42 +3,64 @@
  * Apple-style smooth scroll and interactive effects
  */
 
+// 인트로 애니메이션 초기화
+function initIntroAnimation() {
+    const introSection = document.querySelector('.intro-section');
+    const cosmicStar = document.querySelector('.cosmic-breathing-star');
+    const clickButton = document.querySelector('.click-button');
+    const mainScreen = document.querySelector('.main-screen');
+    
+    if (!introSection || !cosmicStar || !clickButton || !mainScreen) return;
+    
+    // 페이지 로드 시 스크롤 비활성화
+    document.body.style.overflow = 'hidden';
+    
+    // Click 버튼 클릭 이벤트
+    clickButton.addEventListener('click', function() {
+        const breathingStar = cosmicStar.querySelector('.breathing-star');
+        
+        // 0. 클릭과 동시에 버튼 즉시 숨기기 (애니메이션과 트랜지션 모두 무시)
+        clickButton.style.animation = 'none';
+        clickButton.style.transition = 'none';
+        clickButton.style.opacity = '0';
+        clickButton.style.pointerEvents = 'none';
+        clickButton.style.visibility = 'hidden';
+        
+        // 1. 별 폭발 애니메이션 시작
+        if (breathingStar) {
+            breathingStar.classList.add('exploding');
+        }
+        
+        // 2. 0.65초 후 main-screen 페이드인 시작 (기존 1.3초에서 절반 앞당김)
+        setTimeout(() => {
+            mainScreen.classList.add('fade-in');
+        }, 650);
+        
+        // 3. 0.8초 후 (별 폭발 애니메이션 완료 후) intro-section 페이드아웃 시작
+        setTimeout(() => {
+            introSection.classList.add('fade-out');
+            cosmicStar.classList.add('explode');
+        }, 800);
+        
+        // 4. 2초 후 요소들 완전 제거 및 스크롤 활성화
+        setTimeout(() => {
+            introSection.style.display = 'none';
+            cosmicStar.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 2000);
+    });
+}
+
 // DOM 로드 완료 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    initScrollInteractions();
+    initIntroAnimation();
     initTextAnimations();
+    initWhatsStickyScroll();
     initBenefitSectionAnimations();
     initFeaturesSectionAnimations();
     initContactSectionAnimations();
     initEmailSubmission();
 });
-
-// 스크롤 인터랙션 초기화
-function initScrollInteractions() {
-    const whatsContainer = document.querySelector('.whats-container');
-    
-    if (!whatsContainer) return;
-    
-    // Parallax effect on scroll
-    window.addEventListener('scroll', function() {
-        const scrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const elementTop = whatsContainer.offsetTop;
-        const elementHeight = whatsContainer.offsetHeight;
-        
-        // Calculate when element is in viewport
-        if (scrollY + windowHeight > elementTop && scrollY < elementTop + elementHeight) {
-            const progress = (scrollY + windowHeight - elementTop) / (windowHeight + elementHeight);
-            const transform = Math.max(0, Math.min(1, progress));
-            
-            // Subtle parallax movement
-            whatsContainer.style.transform = `translateY(${(1 - transform) * 20}px)`;
-            whatsContainer.style.opacity = Math.min(1, transform * 1.5);
-        }
-    });
-}
-
-
 
 // 텍스트 애니메이션 초기화
 function initTextAnimations() {
@@ -50,14 +72,142 @@ function initTextAnimations() {
     });
 }
 
-// Benefit 섹션 스크롤 애니메이션 초기화
+// Whats 섹션 단순한 휠 스냅 (한 번 휠 = 한 번 전환)
+function initWhatsStickyScroll() {
+    const stickyContainer = document.querySelector('.whats-sticky-container');
+    const whatsSections = Array.from(document.querySelectorAll('.whats-section'));
+    if (!stickyContainer || whatsSections.length === 0) return;
+
+    let currentSection = 0;
+    let isBlocked = false;
+
+    // 각 섹션의 스크롤 위치 계산
+    function getSectionScrollTop(sectionIndex) {
+        return stickyContainer.offsetTop + sectionIndex * window.innerHeight;
+    }
+
+    // 섹션 활성화/비활성화
+    function updateActiveSection(newSection) {
+        whatsSections.forEach((section, idx) => {
+            if (idx === newSection) section.classList.add('active');
+            else section.classList.remove('active');
+        });
+        currentSection = newSection;
+    }
+
+    // 즉시 섹션으로 이동 (딱딱한 스냅)
+    function goToSection(sectionIndex) {
+        if (sectionIndex < 0 || sectionIndex >= whatsSections.length) return;
+        
+        const targetScrollTop = getSectionScrollTop(sectionIndex);
+        window.scrollTo(0, targetScrollTop); // behavior 제거로 즉시 이동
+        updateActiveSection(sectionIndex);
+    }
+
+    // 휠 이벤트만 처리 (스크롤 이벤트 제거)
+    function onWheel(e) {
+        if (isBlocked) {
+            e.preventDefault();
+            return;
+        }
+
+        const scrollY = window.scrollY;
+        const containerTop = stickyContainer.offsetTop;
+        const containerBottom = containerTop + stickyContainer.offsetHeight - window.innerHeight;
+        
+        // whats 섹션 영역 내에서만 동작
+        if (scrollY < containerTop - 50 || scrollY > containerBottom + 50) return;
+
+        // 휠 방향 감지
+        const direction = e.deltaY > 0 ? 1 : -1;
+        let targetSection = currentSection;
+
+        if (direction > 0 && currentSection < whatsSections.length - 1) {
+            // 다음 whats 섹션으로 이동
+            e.preventDefault();
+            targetSection = currentSection + 1;
+        } else if (direction < 0 && currentSection > 0) {
+            // 이전 whats 섹션으로 이동
+            e.preventDefault();
+            targetSection = currentSection - 1;
+        } else if (direction > 0 && currentSection === whatsSections.length - 1) {
+            // 마지막 whats 섹션에서 아래로 휠: 일반 스크롤로 넘어가도록 허용
+            return; // preventDefault하지 않고 자연스러운 스크롤 허용
+        } else if (direction < 0 && currentSection === 0) {
+            // 첫 번째 whats 섹션에서 위로 휠: intro로 돌아가거나 무시
+            e.preventDefault();
+            return;
+        }
+
+        if (targetSection !== currentSection) {
+            // 휠 블로킹 (연속 휠 방지)
+            isBlocked = true;
+            goToSection(targetSection);
+            
+            // 200ms 후 블로킹 해제
+            setTimeout(() => {
+                isBlocked = false;
+            }, 200);
+        }
+    }
+
+    // whats 섹션 휠 이벤트 등록
+    window.addEventListener('wheel', onWheel, { passive: false });
+
+    // whats 섹션과 benefit 섹션 사이의 자연스러운 스크롤을 위한 영역 감지
+    window.addEventListener('scroll', function() {
+        if (isBlocked) return;
+
+        const scrollY = window.scrollY;
+        const containerTop = stickyContainer.offsetTop;
+        const containerBottom = containerTop + stickyContainer.offsetHeight - window.innerHeight;
+        
+        // whats 섹션 영역 내에서 현재 어떤 섹션이 보이는지 감지
+        if (scrollY >= containerTop && scrollY <= containerBottom) {
+            // 현재 스크롤 위치에 따라 활성 섹션 업데이트
+            const relativeScrollY = scrollY - containerTop;
+            const targetSectionIndex = Math.round(relativeScrollY / window.innerHeight);
+            
+            if (targetSectionIndex !== currentSection && 
+                targetSectionIndex >= 0 && 
+                targetSectionIndex < whatsSections.length) {
+                updateActiveSection(targetSectionIndex);
+            }
+        }
+    }, { passive: true });
+
+    // 리사이즈 시 현재 섹션 위치로 재조정
+    window.addEventListener('resize', () => {
+        goToSection(currentSection);
+    });
+
+    // 초기 상태
+    updateActiveSection(0);
+    goToSection(0);
+}
+
+// Benefit 섹션들 스크롤 애니메이션 초기화
 function initBenefitSectionAnimations() {
-    const benefitHeadline = document.querySelector('.benefit-headline');
-    const benefitContainer = document.querySelector('.benefit-container');
-    const benefitDescription = document.querySelector('.benefit-description');
-    const benefitToFeature = document.querySelector('.benefit-description__to-feature');
+    // benefit-1의 요소들
+    const benefit1Headline = document.querySelector('#benefit-1 .benefit-headline');
+    const benefit1Container = document.querySelector('#benefit-1 .benefit-container');
     
-    if (!benefitHeadline || !benefitContainer || !benefitDescription || !benefitToFeature) return;
+    // benefit-2의 요소들
+    const benefit2Description = document.querySelector('#benefit-2 .benefit-description');
+    const benefit2ToFeature = document.querySelector('#benefit-2 .benefit-description__to-feature');
+    
+    // benefit-1 애니메이션 초기화
+    if (benefit1Headline && benefit1Container) {
+        initBenefit1Animations(benefit1Headline, benefit1Container);
+    }
+    
+    // benefit-2 애니메이션 초기화
+    if (benefit2Description) {
+        initBenefit2Animations(benefit2Description, benefit2ToFeature);
+    }
+}
+
+function initBenefit1Animations(benefitHeadline, benefitContainer) {
     
     // Intersection Observer 설정
     const observerOptions = {
@@ -74,14 +224,6 @@ function initBenefitSectionAnimations() {
                 // 헤드라인이 나타난 후 0.5초 뒤에 컨테이너 애니메이션 트리거
                 setTimeout(() => {
                     benefitContainer.classList.add('visible');
-                    // 컨테이너가 나타난 후 0.8초 뒤에 설명 문구 애니메이션 트리거
-                    setTimeout(() => {
-                        benefitDescription.classList.add('visible');
-                        // 설명 문구가 나타난 후 0.6초 뒤에 화살표 애니메이션 트리거
-                        setTimeout(() => {
-                            benefitToFeature.classList.add('visible');
-                        }, 600);
-                    }, 800);
                 }, 500);
                 
                 headlineObserver.unobserve(entry.target);
@@ -91,40 +233,107 @@ function initBenefitSectionAnimations() {
     
     headlineObserver.observe(benefitHeadline);
     
-
-    
-    // 추가적인 스크롤 효과 (시차 효과) - 쓰로틀링 적용
+    // Benefit-1 섹션 시차 효과 (whats 섹션 영역 제외)
     let isScrolling = false;
     
     window.addEventListener('scroll', () => {
         if (!isScrolling) {
             requestAnimationFrame(() => {
-                const benefitSection = document.querySelector('.benefit-section');
+                const benefit1Section = document.querySelector('#benefit-1');
+                const whatsContainer = document.querySelector('.whats-sticky-container');
                 
-                if (benefitSection) {
-                    const rect = benefitSection.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
+                if (benefit1Section && whatsContainer) {
+                    const scrollY = window.scrollY;
+                    const whatsTop = whatsContainer.offsetTop;
+                    const whatsBottom = whatsTop + whatsContainer.offsetHeight;
                     
-                    // 섹션이 뷰포트에 있을 때만 실행
-                    if (rect.top < windowHeight && rect.bottom > 0) {
-                        const progress = Math.max(0, Math.min(1, (windowHeight - rect.top) / windowHeight));
+                    // whats 섹션 영역이 아닐 때만 시차 효과 실행
+                    if (scrollY < whatsTop - 100 || scrollY > whatsBottom + 100) {
+                        const rect = benefit1Section.getBoundingClientRect();
+                        const windowHeight = window.innerHeight;
                         
-                                        // 미묘한 시차 효과
-                if (benefitHeadline.classList.contains('visible')) {
-                    benefitHeadline.style.transform = `translateY(${(1 - progress) * 10}px)`;
+                        // 섹션이 뷰포트에 있을 때만 실행
+                        if (rect.top < windowHeight && rect.bottom > 0) {
+                            const progress = Math.max(0, Math.min(1, (windowHeight - rect.top) / windowHeight));
+                            
+                            // 미묘한 시차 효과
+                            if (benefitHeadline.classList.contains('visible')) {
+                                benefitHeadline.style.transform = `translateY(${(1 - progress) * 10}px)`;
+                            }
+                            
+                            if (benefitContainer.classList.contains('visible')) {
+                                benefitContainer.style.transform = `translateY(${(1 - progress) * 20}px)`;
+                            }
+                        }
+                    }
                 }
                 
-                if (benefitContainer.classList.contains('visible')) {
-                    benefitContainer.style.transform = `translateY(${(1 - progress) * 20}px)`;
+                isScrolling = false;
+            });
+            isScrolling = true;
+        }
+    });
+}
+
+function initBenefit2Animations(benefitDescription, benefitToFeature) {
+    // Intersection Observer 설정
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '-50px 0px -50px 0px'
+    };
+    
+    // 설명 관찰자
+    const descriptionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // 설명이 나타난 후 0.6초 뒤에 화살표 애니메이션 트리거 (있을 경우)
+                if (benefitToFeature) {
+                    setTimeout(() => {
+                        benefitToFeature.classList.add('visible');
+                    }, 600);
                 }
                 
-                if (benefitDescription.classList.contains('visible')) {
-                    benefitDescription.style.transform = `translateY(${(1 - progress) * 15}px)`;
-                }
+                descriptionObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    descriptionObserver.observe(benefitDescription);
+    
+    // Benefit-2 섹션 시차 효과 (whats 섹션 영역 제외)
+    let isScrolling = false;
+    
+    window.addEventListener('scroll', () => {
+        if (!isScrolling) {
+            requestAnimationFrame(() => {
+                const benefit2Section = document.querySelector('#benefit-2');
+                const whatsContainer = document.querySelector('.whats-sticky-container');
                 
-                if (benefitToFeature.classList.contains('visible')) {
-                    benefitToFeature.style.transform = `translateY(${(1 - progress) * 10}px)`;
-                }
+                if (benefit2Section && whatsContainer) {
+                    const scrollY = window.scrollY;
+                    const whatsTop = whatsContainer.offsetTop;
+                    const whatsBottom = whatsTop + whatsContainer.offsetHeight;
+                    
+                    // whats 섹션 영역이 아닐 때만 시차 효과 실행
+                    if (scrollY < whatsTop - 100 || scrollY > whatsBottom + 100) {
+                        const rect = benefit2Section.getBoundingClientRect();
+                        const windowHeight = window.innerHeight;
+                        
+                        // 섹션이 뷰포트에 있을 때만 실행
+                        if (rect.top < windowHeight && rect.bottom > 0) {
+                            const progress = Math.max(0, Math.min(1, (windowHeight - rect.top) / windowHeight));
+                            
+                            // 미묘한 시차 효과
+                            if (benefitDescription.classList.contains('visible')) {
+                                benefitDescription.style.transform = `translateY(${(1 - progress) * 15}px)`;
+                            }
+                            
+                            if (benefitToFeature && benefitToFeature.classList.contains('visible')) {
+                                benefitToFeature.style.transform = `translateY(${(1 - progress) * 10}px)`;
+                            }
+                        }
                     }
                 }
                 
@@ -351,33 +560,41 @@ function initFeaturesSectionAnimations() {
     
     headlineObserver.observe(featuresHeadline);
     
-    // 추가적인 스크롤 효과 (시차 효과)
+    // Features 섹션 시차 효과 (whats 섹션 영역 제외)
     let isScrolling = false;
     
     window.addEventListener('scroll', () => {
         if (!isScrolling) {
             requestAnimationFrame(() => {
                 const featuresSection = document.querySelector('.features-section');
+                const whatsContainer = document.querySelector('.whats-sticky-container');
                 
-                if (featuresSection) {
-                    const rect = featuresSection.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
+                if (featuresSection && whatsContainer) {
+                    const scrollY = window.scrollY;
+                    const whatsTop = whatsContainer.offsetTop;
+                    const whatsBottom = whatsTop + whatsContainer.offsetHeight;
                     
-                    // 섹션이 뷰포트에 있을 때만 실행
-                    if (rect.top < windowHeight && rect.bottom > 0) {
-                        const progress = Math.max(0, Math.min(1, (windowHeight - rect.top) / windowHeight));
+                    // whats 섹션 영역이 아닐 때만 시차 효과 실행
+                    if (scrollY < whatsTop - 100 || scrollY > whatsBottom + 100) {
+                        const rect = featuresSection.getBoundingClientRect();
+                        const windowHeight = window.innerHeight;
                         
-                        // 미묘한 시차 효과
-                        if (featuresHeadline.classList.contains('visible')) {
-                            featuresHeadline.style.transform = `translateY(${(1 - progress) * 10}px)`;
-                        }
-                        
-                        if (featuresContainer.classList.contains('visible')) {
-                            featuresContainer.style.transform = `translateY(${(1 - progress) * 20}px)`;
-                        }
-                        
-                        if (featureDescription.classList.contains('visible')) {
-                            featureDescription.style.transform = `translateY(${(1 - progress) * 15}px)`;
+                        // 섹션이 뷰포트에 있을 때만 실행
+                        if (rect.top < windowHeight && rect.bottom > 0) {
+                            const progress = Math.max(0, Math.min(1, (windowHeight - rect.top) / windowHeight));
+                            
+                            // 미묘한 시차 효과
+                            if (featuresHeadline.classList.contains('visible')) {
+                                featuresHeadline.style.transform = `translateY(${(1 - progress) * 10}px)`;
+                            }
+                            
+                            if (featuresContainer.classList.contains('visible')) {
+                                featuresContainer.style.transform = `translateY(${(1 - progress) * 20}px)`;
+                            }
+                            
+                            if (featureDescription.classList.contains('visible')) {
+                                featureDescription.style.transform = `translateY(${(1 - progress) * 15}px)`;
+                            }
                         }
                     }
                 }

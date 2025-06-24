@@ -34,6 +34,16 @@
         </div>
     </div>
 
+    <div class="cosmic-breathing-star">
+        <div class="breathing-star" style="--delay: 0s; --x: 50%; --y: 50%;"></div>
+    </div>
+    
+    <section class="intro-section" id="intro">
+        <div class="intro-container">
+        </div>
+        <div class="click-button">Click</div>
+    </section>
+
     <header class="header-nav">
         <nav class="header-nav__nav">
             <ul class="header-nav__list">
@@ -41,7 +51,7 @@
                     <a href="#whats" class="header-nav__link">What's</a>
                 </li>
                 <li class="header-nav__item">
-                    <a href="#benefit" class="header-nav__link">Benefit</a>
+                    <a href="#benefit-1" class="header-nav__link">Benefit</a>
                 </li>
                 <li class="header-nav__item">
                     <a href="#features" class="header-nav__link">Features</a>
@@ -52,38 +62,55 @@
             </ul>
         </nav>
     </header>
-
+ 
     <main class="main-screen">
-        <section class="whats-section" id="whats">
-            <div class="whats-container">
-                <h1 class="whats-main-title">
-                    스크롤 한 번, 클릭 한 번이<br>
-                    고객을 머무르게 한다면?
-                </h1>
-                <p class="whats-subtitle">
-                    단순히 '보여주는' 것을 넘어, 직접 '느끼게' 하세요.
-                </p>
-                <p class="whats-description">
-                    스크롤에 반응하고, 클릭에 살아나는 웹.<br>
-                    당신의 브랜드를 '경험'하게 하세요.
-                </p>
-                <p class="whats-highlight">
-                    우리는 인터랙티브 웹사이트를 제작합니다
-                </p>
-                <div class="whats-scroll-arrow">
-                    <div class="scroll-arrow">
-                        <div class="scroll-arrow__icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7 13L12 18L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M7 6L12 11L17 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+        <!-- Whats 섹션들을 위한 스티키 컨테이너 -->
+        <div class="whats-sticky-container" id="whats">
+            <section class="whats-section active" id="whats-1" data-section="1">
+                <div class="whats-container">
+                    <h1 class="whats-main-title">
+                        클릭 한 번으로<br>
+                        고객의 시선을 끌어당긴다면?
+                    </h1>
+                </div>
+            </section>
+            <section class="whats-section" id="whats-2" data-section="2">
+                <div class="whats-container">
+                    <p class="whats-subtitle">
+                        단순히 '보여주는' 것을 넘어, 직접 '느끼게' 하세요.
+                    </p>
+                </div>
+            </section>
+            <section class="whats-section" id="whats-3" data-section="3">
+                <div class="whats-container">
+                    <p class="whats-description">
+                        스크롤에 반응하고, 클릭에 살아나는 웹.<br>
+                        당신의 브랜드를 '경험'하게 하세요.
+                    </p>
+                </div>
+            </section>
+            <section class="whats-section" id="whats-4" data-section="4">
+                <div class="whats-container" id="whats-4__container">
+                    <p class="whats-highlight">
+                        우리는 인터랙티브 웹사이트를 제작합니다.
+                    </p>
+                    <div class="whats-scroll-arrow">
+                        <div class="scroll-arrow">
+                            <div class="scroll-arrow__icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 13L12 18L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7 6L12 11L17 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="scroll-arrow__text">스크롤하여 더 알아보기</div>
                         </div>
-                        <div class="scroll-arrow__text">스크롤하여 더 알아보기</div>
                     </div>
                 </div>
-            </div>
-        </section>
-        <section class="benefit-section" id="benefit">
+            </section>
+            <!-- 스크롤 스페이서 - 각 섹션을 위한 스크롤 영역 확보 -->
+            <div class="whats-scroll-spacer"></div>
+        </div>
+        <section class="benefit-section" id="benefit-1">
             <div class="benefit-headline">
                 <h2 class="benefit-headline__title">
                     둘 중 어느 곳에 시선이 머무르시나요?
@@ -116,20 +143,11 @@
                     </div>
                 </div>
             </div>
+        </section>
+        <section class="benefit-section" id="benefit-2">
             <div class="benefit-description">
                 <div class="benefit-description__text">
                     움직이는 요소에 시선이 향하는 것은 매우 자연스러운 현상입니다.
-                </div>
-            </div>
-            <div class="benefit-description__to-feature">
-                <div class="scroll-arrow">
-                    <div class="scroll-arrow__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 13L12 18L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7 6L12 11L17 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <div class="scroll-arrow__text">스크롤하여 더 알아보기</div>
                 </div>
             </div>
         </section>
