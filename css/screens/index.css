@@ -87,6 +87,29 @@
     z-index: 1;
 }
 
+/* whats-1 섹션의 cosmic-breathing-star와 동일한 색상의 그라데이션 배경 */
+.whats-section[data-section="1"] {
+    background: linear-gradient(180deg, 
+        rgba(0, 0, 0, 0.8) 0%, 
+        rgba(1, 20, 83, 0.8) 100%
+    );
+}
+
+/* whats-2 섹션의 레몬그라스 그라데이션 배경 */
+.whats-section[data-section="2"] {
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(255, 255, 0, 0.8) 100%
+    );
+}
+
+/* whats-2 섹션의 subtitle은 기본 fadeInUp 애니메이션 비활성화 */
+.whats-section[data-section="2"] .whats-subtitle {
+    opacity: 1;
+    transform: none;
+    animation: none;
+}
+
 .whats-section.active {
     display: flex;
     z-index: 2;
@@ -123,20 +146,16 @@
     width: 100%;
     text-align: center;
     position: relative;
-    z-index: 2;
-    /* opacity: 0; */
-    /* transform: translateY(30px); */
-    /* animation: fadeInUp 1.2s ease-out 0.3s forwards; */
-    opacity: 1;
-    transform: none;
-    animation: none;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1.2s ease-out 0.3s forwards;
 }
 
 /* 필요하다면 섹션 전환 시 등장 애니메이션만(예시) */
 .whats-section.active .whats-container {
     opacity: 1;
-    transform: none;
-    animation: none;
+    transform: translateY(0);
 }
 
 /* 우주의 별 같은 호흡 효과 */
@@ -273,45 +292,70 @@
     font-weight: 700;
     line-height: 1.1;
     padding-bottom: 60px;
-    background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: titleGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes titleGlow {
-    0% { filter: drop-shadow(0 0 20px rgba(255, 254, 171, 0.2)); }
-    100% { filter: drop-shadow(0 0 40px rgba(255, 230, 0, 0.8)); }
 }
 
 .whats-subtitle {
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
-    font-weight: 400;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
     padding-bottom: 140px;
-    color: #d1d5db;
-    opacity: 1;
-    transform: none;
+}
+
+/* whats-subtitle 애니메이션 스타일 */
+.whats-subtitle-line1,
+.whats-subtitle-line2 {
+    display: inline-block;
+    opacity: 0;
+    transform: translateX(-100vw);
+}
+
+.whats-subtitle-line2 {
+    transform: translateX(100vw);
+}
+
+/* whats-2 섹션이 활성화될 때 애니메이션 트리거 */
+.whats-section[data-section="2"].active .whats-subtitle-line1 {
+    animation: slideInFromLeft 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+}
+
+.whats-section[data-section="2"].active .whats-subtitle-line2 {
+    animation: slideInFromRight 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s forwards;
+}
+
+@keyframes slideInFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100vw);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(100vw);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .whats-description {
-    font-size: clamp(1rem, 2.5vw, 1.4rem);
-    font-weight: 300;
+    font-size: clamp(2.0rem, 6vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.2;
     padding-bottom: 140px;
-    color: #9ca3af;
-    line-height: 1.6;
-    opacity: 1;
-    transform: none;
 }
 
 .whats-highlight {
-    font-size: clamp(1.1rem, 2.8vw, 1.6rem);
-    font-weight: 500;
+    font-size: clamp(2.0rem, 6vw, 3.5rem);
+    font-weight: 700;
     color: #60a5fa;
     margin-bottom: 3rem;
-    opacity: 1;
-    transform: none;
-    text-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
 }
 
 
