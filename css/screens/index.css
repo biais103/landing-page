@@ -98,7 +98,7 @@
 /* whats-2 섹션의 레몬그라스 그라데이션 배경 */
 .whats-section[data-section="2"] {
     background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(1, 20, 83, 0.8) 0%, 
         rgba(255, 255, 0, 0.8) 100%
     );
 }
@@ -147,13 +147,6 @@
     text-align: center;
     position: relative;
     z-index: 10;
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 1.2s ease-out 0.3s forwards;
-}
-
-/* 필요하다면 섹션 전환 시 등장 애니메이션만(예시) */
-.whats-section.active .whats-container {
     opacity: 1;
     transform: translateY(0);
 }
@@ -292,7 +285,63 @@
     font-weight: 700;
     line-height: 1.1;
     padding-bottom: 60px;
+    opacity: 0;
 }
+
+/* Apple-style character animation */
+.whats-main-title .title-line {
+    display: block;
+    overflow: hidden;
+    perspective: 1000px;
+}
+
+.whats-main-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(120%) rotateX(-90deg) scale(0.8);
+    transform-origin: center bottom;
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: blur(8px);
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+}
+
+/* Apple-style reveal animation when whats-1 becomes active */
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title {
+    opacity: 1;
+}
+
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .char {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg) scale(1);
+    filter: blur(0px);
+}
+
+/* Staggered animation timing for each character - Apple-style wave effect */
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(1) { transition-delay: 0.1s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(2) { transition-delay: 0.13s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(3) { transition-delay: 0.16s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(4) { transition-delay: 0.19s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(5) { transition-delay: 0.22s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(6) { transition-delay: 0.25s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(7) { transition-delay: 0.28s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:first-child .char:nth-child(8) { transition-delay: 0.31s; }
+
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(1) { transition-delay: 0.45s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(2) { transition-delay: 0.48s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(3) { transition-delay: 0.51s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(4) { transition-delay: 0.54s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(5) { transition-delay: 0.57s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(6) { transition-delay: 0.60s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(7) { transition-delay: 0.63s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(8) { transition-delay: 0.66s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(9) { transition-delay: 0.69s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(10) { transition-delay: 0.72s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(11) { transition-delay: 0.75s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(12) { transition-delay: 0.78s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(13) { transition-delay: 0.81s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(14) { transition-delay: 0.84s; }
+.whats-section[data-section="1"].apple-text-reveal .whats-main-title .title-line:last-child .char:nth-child(15) { transition-delay: 0.87s; }
 
 .whats-subtitle {
     font-size: clamp(2.5rem, 6vw, 4.5rem);
@@ -319,6 +368,15 @@
 }
 
 .whats-section[data-section="2"].active .whats-subtitle-line2 {
+    animation: slideInFromRight 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s forwards;
+}
+
+/* whats-3 섹션이 활성화될 때 애니메이션 트리거 */
+.whats-section[data-section="3"].active .whats-subtitle-line1 {
+    animation: slideInFromLeft 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+}
+
+.whats-section[data-section="3"].active .whats-subtitle-line2 {
     animation: slideInFromRight 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s forwards;
 }
 
@@ -363,6 +421,18 @@
 @media (max-width: 768px) {
     .whats-section {
         padding: 40px 16px;
+    }
+    
+    /* 모바일에서는 더 간단한 애니메이션 사용 */
+    .whats-main-title .char {
+        transform: translateY(60%) scale(0.9);
+        filter: blur(3px);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .whats-section[data-section="1"].apple-text-reveal .whats-main-title .char {
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
     }
 }
 
@@ -530,8 +600,25 @@
 .whats-scroll-arrow {
     display: flex;
     justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* whats-1 섹션의 스크롤 화살표는 텍스트 애니메이션 완료 후 나타남 */
+.whats-section[data-section="1"].apple-text-reveal .whats-scroll-arrow {
     opacity: 1;
-    transform: none;
+    transform: translateY(0);
+    transition-delay: 1.9s; /* 텍스트 애니메이션 완료(1.87s) + 여유 시간(0.03s) */
+}
+
+/* 다른 whats 섹션들의 스크롤 화살표는 즉시 표시 */
+.whats-section[data-section="2"] .whats-scroll-arrow,
+.whats-section[data-section="3"] .whats-scroll-arrow,
+.whats-section[data-section="4"] .whats-scroll-arrow {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
 }
 
 .scroll-arrow {

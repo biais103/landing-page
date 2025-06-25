@@ -47,6 +47,12 @@ function initIntroAnimation() {
             introSection.style.display = 'none';
             cosmicStar.style.display = 'none';
             document.body.style.overflow = 'auto';
+            
+            // 5. Apple-style 텍스트 애니메이션 트리거
+            const whatsSection1 = document.querySelector('#whats-1');
+            if (whatsSection1) {
+                whatsSection1.classList.add('apple-text-reveal');
+            }
         }, 2000);
     });
 }
@@ -64,8 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 텍스트 애니메이션 초기화
 function initTextAnimations() {
-    // Text reveal animation on load
-    const textElements = document.querySelectorAll('.whats-main-title, .whats-subtitle, .whats-description, .whats-highlight');
+    // Text reveal animation on load (whats-main-title 제외 - Apple-style 애니메이션 사용)
+    const textElements = document.querySelectorAll('.whats-subtitle, .whats-description, .whats-highlight');
     
     textElements.forEach((element, index) => {
         element.style.animationDelay = `${0.3 + (index * 0.3)}s`;
@@ -719,4 +725,4 @@ function initFeaturesSectionAnimations() {
             isScrolling = true;
         }
     });
-} 
+}
