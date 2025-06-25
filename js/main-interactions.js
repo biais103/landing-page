@@ -72,7 +72,7 @@ function initTextAnimations() {
     });
 }
 
-// Whats 섹션 단순한 휠 스냅 (한 번 휠 = 한 번 전환)
+// Whats 섹션 순차적 스크롤 스냅 (건너뛰기 방지)
 function initWhatsStickyScroll() {
     const stickyContainer = document.querySelector('.whats-sticky-container');
     const whatsSections = Array.from(document.querySelectorAll('.whats-section'));
@@ -80,6 +80,8 @@ function initWhatsStickyScroll() {
 
     let currentSection = 0;
     let isBlocked = false;
+    let wheelAccumulator = 0; // 휠 누적값
+    let lastWheelTime = 0;
 
     // 각 섹션의 스크롤 위치 계산
     function getSectionScrollTop(sectionIndex) {
@@ -95,16 +97,19 @@ function initWhatsStickyScroll() {
         currentSection = newSection;
     }
 
-    // 즉시 섹션으로 이동 (딱딱한 스냅)
+    // 부드러운 섹션 이동
     function goToSection(sectionIndex) {
         if (sectionIndex < 0 || sectionIndex >= whatsSections.length) return;
         
         const targetScrollTop = getSectionScrollTop(sectionIndex);
-        window.scrollTo(0, targetScrollTop); // behavior 제거로 즉시 이동
+        window.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+        });
         updateActiveSection(sectionIndex);
     }
 
-    // 휠 이벤트만 처리 (스크롤 이벤트 제거)
+    // 개선된 휠 이벤트 처리 (순차적 전환 보장)
     function onWheel(e) {
         if (isBlocked) {
             e.preventDefault();
@@ -116,45 +121,152 @@ function initWhatsStickyScroll() {
         const containerBottom = containerTop + stickyContainer.offsetHeight - window.innerHeight;
         
         // whats 섹션 영역 내에서만 동작
-        if (scrollY < containerTop - 50 || scrollY > containerBottom + 50) return;
+        if (scrollY < containerTop - 50 || scrollY > containerBottom + 50) {
+            wheelAccumulator = 0; // 영역 벗어나면 누적값 초기화
+            return;
+        }
 
+        const currentTime = Date.now();
+        const timeDiff = currentTime - lastWheelTime;
+        
+        // 휠 누적값 계산 (빠른 스크롤 감지)
+        if (timeDiff > 150) {
+            wheelAccumulator = 0; // 150ms 이상 간격이면 누적값 초기화
+        }
+        
+        wheelAccumulator += Math.abs(e.deltaY);
+        lastWheelTime = currentTime;
+        
         // 휠 방향 감지
         const direction = e.deltaY > 0 ? 1 : -1;
         let targetSection = currentSection;
 
-        if (direction > 0 && currentSection < whatsSections.length - 1) {
-            // 다음 whats 섹션으로 이동
+        // 누적값이 임계치를 넘으면 섹션 전환 (빠른 스크롤이라도 한 번에 하나씩만)
+        const threshold = 100; // 임계치 (조정 가능)
+        
+        if (wheelAccumulator >= threshold) {
+            if (direction > 0 && currentSection < whatsSections.length - 1) {
+                // 다음 whats 섹션으로 이동 (순차적)
+                e.preventDefault();
+                targetSection = currentSection + 1;
+                wheelAccumulator = 0; // 누적값 초기화
+            } else if (direction < 0 && currentSection > 0) {
+                // 이전 whats 섹션으로 이동 (순차적)
+                e.preventDefault();
+                targetSection = currentSection - 1;
+                wheelAccumulator = 0; // 누적값 초기화
+            } else if (direction > 0 && currentSection === whatsSections.length - 1) {
+                // 마지막 whats 섹션에서 아래로 휠: 일반 스크롤로 넘어가도록 허용
+                wheelAccumulator = 0;
+                return;
+            } else if (direction < 0 && currentSection === 0) {
+                // 첫 번째 whats 섹션에서 위로 휠: intro로 돌아가거나 무시
+                e.preventDefault();
+                wheelAccumulator = 0;
+                return;
+            }
+        } else {
+            // 임계치 미달시 기본 스크롤 방지
             e.preventDefault();
-            targetSection = currentSection + 1;
-        } else if (direction < 0 && currentSection > 0) {
-            // 이전 whats 섹션으로 이동
-            e.preventDefault();
-            targetSection = currentSection - 1;
-        } else if (direction > 0 && currentSection === whatsSections.length - 1) {
-            // 마지막 whats 섹션에서 아래로 휠: 일반 스크롤로 넘어가도록 허용
-            return; // preventDefault하지 않고 자연스러운 스크롤 허용
-        } else if (direction < 0 && currentSection === 0) {
-            // 첫 번째 whats 섹션에서 위로 휠: intro로 돌아가거나 무시
-            e.preventDefault();
-            return;
         }
 
         if (targetSection !== currentSection) {
-            // 휠 블로킹 (연속 휠 방지)
+            // 휠 블로킹 (연속 휠 방지) - 더 긴 시간으로 설정
             isBlocked = true;
             goToSection(targetSection);
             
-            // 200ms 후 블로킹 해제
+            // 800ms 후 블로킹 해제 (부드러운 스크롤 완료 대기)
             setTimeout(() => {
                 isBlocked = false;
-            }, 200);
+            }, 800);
         }
     }
 
-    // whats 섹션 휠 이벤트 등록
-    window.addEventListener('wheel', onWheel, { passive: false });
+    // 터치/스와이프 지원 (모바일)
+    let touchStartY = 0;
+    let touchEndY = 0;
+    
+    function onTouchStart(e) {
+        touchStartY = e.touches[0].clientY;
+    }
+    
+    function onTouchEnd(e) {
+        if (isBlocked) return;
+        
+        touchEndY = e.changedTouches[0].clientY;
+        const touchDiff = touchStartY - touchEndY;
+        
+        // 최소 스와이프 거리
+        if (Math.abs(touchDiff) < 50) return;
+        
+        const scrollY = window.scrollY;
+        const containerTop = stickyContainer.offsetTop;
+        const containerBottom = containerTop + stickyContainer.offsetHeight - window.innerHeight;
+        
+        // whats 섹션 영역 내에서만 동작
+        if (scrollY < containerTop - 50 || scrollY > containerBottom + 50) return;
+        
+        let targetSection = currentSection;
+        
+        if (touchDiff > 0 && currentSection < whatsSections.length - 1) {
+            // 위로 스와이프 (다음 섹션)
+            e.preventDefault();
+            targetSection = currentSection + 1;
+        } else if (touchDiff < 0 && currentSection > 0) {
+            // 아래로 스와이프 (이전 섹션)
+            e.preventDefault();
+            targetSection = currentSection - 1;
+        }
+        
+        if (targetSection !== currentSection) {
+            isBlocked = true;
+            goToSection(targetSection);
+            
+            setTimeout(() => {
+                isBlocked = false;
+            }, 800);
+        }
+    }
 
-    // whats 섹션과 benefit 섹션 사이의 자연스러운 스크롤을 위한 영역 감지
+    // 이벤트 리스너 등록
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: false });
+
+    // 키보드 네비게이션 지원
+    function onKeyDown(e) {
+        if (isBlocked) return;
+        
+        const scrollY = window.scrollY;
+        const containerTop = stickyContainer.offsetTop;
+        const containerBottom = containerTop + stickyContainer.offsetHeight - window.innerHeight;
+        
+        // whats 섹션 영역 내에서만 동작
+        if (scrollY < containerTop - 50 || scrollY > containerBottom + 50) return;
+        
+        let targetSection = currentSection;
+        
+        if ((e.key === 'ArrowDown' || e.key === 'PageDown') && currentSection < whatsSections.length - 1) {
+            e.preventDefault();
+            targetSection = currentSection + 1;
+        } else if ((e.key === 'ArrowUp' || e.key === 'PageUp') && currentSection > 0) {
+            e.preventDefault();
+            targetSection = currentSection - 1;
+        }
+        
+        if (targetSection !== currentSection) {
+            isBlocked = true;
+            goToSection(targetSection);
+            
+            setTimeout(() => {
+                isBlocked = false;
+            }, 800);
+        }
+    }
+    
+    window.addEventListener('keydown', onKeyDown);
+
+    // 스크롤 위치 동기화 (외부 스크롤 시)
     window.addEventListener('scroll', function() {
         if (isBlocked) return;
 
@@ -164,7 +276,6 @@ function initWhatsStickyScroll() {
         
         // whats 섹션 영역 내에서 현재 어떤 섹션이 보이는지 감지
         if (scrollY >= containerTop && scrollY <= containerBottom) {
-            // 현재 스크롤 위치에 따라 활성 섹션 업데이트
             const relativeScrollY = scrollY - containerTop;
             const targetSectionIndex = Math.round(relativeScrollY / window.innerHeight);
             
@@ -178,12 +289,16 @@ function initWhatsStickyScroll() {
 
     // 리사이즈 시 현재 섹션 위치로 재조정
     window.addEventListener('resize', () => {
-        goToSection(currentSection);
+        setTimeout(() => {
+            goToSection(currentSection);
+        }, 100);
     });
 
     // 초기 상태
     updateActiveSection(0);
-    goToSection(0);
+    setTimeout(() => {
+        goToSection(0);
+    }, 100);
 }
 
 // Benefit 섹션들 스크롤 애니메이션 초기화
