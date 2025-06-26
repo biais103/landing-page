@@ -195,11 +195,11 @@ class GridContainer {
         });
     }
 
-    // 색상 애니메이션 시작
+    // 색상 애니메이션 시작 (명도 스펙트럼만)
     startColorAnimation(gridCell) {
         // 이미 애니메이션 중이면 중단하고 다시 시작
         if (this.animatingCells.has(gridCell)) {
-            gridCell.classList.remove('animating');
+            gridCell.classList.remove('spectrum-only-animating');
             this.animatingCells.delete(gridCell);
             // 짧은 지연 후 다시 시작하여 애니메이션 리셋
             setTimeout(() => {
@@ -208,40 +208,26 @@ class GridContainer {
             return;
         }
 
-        // 애니메이션 시작
+        // 명도 스펙트럼 애니메이션 시작
         this.animatingCells.add(gridCell);
-        gridCell.classList.add('animating');
+        gridCell.classList.add('spectrum-only-animating');
 
-        // 2초 후 첫 번째 애니메이션 완료 처리
+        // 3초 후 애니메이션 완료
         setTimeout(() => {
-            // 2단계: 명도 스펙트럼 애니메이션 시작
-            gridCell.classList.remove('animating');
-            gridCell.classList.add('spectrum-animating');
-            
-            // 3초 후 2단계 완료, 3단계 시작
-            setTimeout(() => {
-                gridCell.classList.remove('spectrum-animating');
-                gridCell.classList.add('final-flip-animating');
-                
-                // 2초 후 전체 애니메이션 완료
-                setTimeout(() => {
-                    this.animatingCells.delete(gridCell);
-                    gridCell.classList.remove('final-flip-animating');
-                }, 2000);
-            }, 3000);
-        }, 2000);
+            this.animatingCells.delete(gridCell);
+            gridCell.classList.remove('spectrum-only-animating');
+        }, 3000);
     }
 
     // 색상 리셋 스케줄링
     scheduleColorReset(gridCell) {
         // 애니메이션이 진행 중인지 확인
         if (this.animatingCells.has(gridCell)) {
-            // 전체 애니메이션(1단계 + 2단계 + 3단계)이 완료될 때까지 기다림 (총 7초)
+            // 명도 스펙트럼 애니메이션이 완료될 때까지 기다림 (3초)
             const checkAnimation = () => {
                 if (!this.animatingCells.has(gridCell)) {
                     // 애니메이션 완료 후 원래 색상으로 복원
                     gridCell.style.backgroundColor = '';
-                    gridCell.style.transform = '';
                 } else {
                     // 아직 애니메이션 중이면 100ms 후 다시 확인
                     setTimeout(checkAnimation, 100);
@@ -251,7 +237,6 @@ class GridContainer {
         } else {
             // 애니메이션이 없으면 즉시 복원
             gridCell.style.backgroundColor = '';
-            gridCell.style.transform = '';
         }
     }
 
