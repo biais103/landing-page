@@ -1,0 +1,76 @@
+/* Scroll Arrow Component */
+.whats-scroll-arrow {
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* whats-1 섹션의 스크롤 화살표는 텍스트 애니메이션 완료 후 나타남 */
+.whats-section[data-section="1"].apple-text-reveal .whats-scroll-arrow {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1.9s; /* 텍스트 애니메이션 완료(1.87s) + 여유 시간(0.03s) */
+}
+
+/* 다른 whats 섹션들의 스크롤 화살표는 즉시 표시 */
+.whats-section[data-section="2"] .whats-scroll-arrow,
+.whats-section[data-section="3"] .whats-scroll-arrow,
+.whats-section[data-section="4"] .whats-scroll-arrow {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.scroll-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: default;
+    transition: all 0.3s ease;
+}
+
+.scroll-arrow__icon {
+    color: #60a5fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(96, 165, 250, 0.1);
+    border: 2px solid rgba(96, 165, 250, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    animation: bounceUpDown 2s ease-in-out infinite;
+}
+
+.scroll-arrow__text {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    font-weight: 400;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+@keyframes bounceUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .scroll-arrow__icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .scroll-arrow__text {
+        font-size: 0.8rem;
+    }
+} 

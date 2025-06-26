@@ -1,0 +1,66 @@
+.grid-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    grid-template-rows: repeat(16, 1fr);
+    gap: 0;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.grid-cell {
+    background-color: var(--color-blue);
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.grid-cell.animating {
+    animation: simpleFlip 2s ease-in-out forwards;
+    transform-style: preserve-3d;
+}
+
+.grid-cell.spectrum-animating {
+    animation: lightnessSpectrum 3s ease-in-out forwards;
+    transform: rotateY(180deg); /* 뒤집어진 상태 유지 */
+}
+
+/* 간단한 회전 + 색상 변화 */
+@keyframes simpleFlip {
+    0% {
+        background-color: var(--color-blue);
+        transform: rotateY(0deg);
+    }
+    100% {
+        background-color: var(--spectrum-1); /* 95% 명도 (계산된 스펙트럼) */
+        transform: rotateY(180deg);
+    }
+}
+
+/* --color-blue 기준 명도 스펙트럼 애니메이션 (19단계 - 역순) */
+@keyframes lightnessSpectrum {
+    0% { background-color: var(--spectrum-1); }       /* 95% 명도 */
+    5.26% { background-color: var(--spectrum-2); }    /* 90% 명도 */
+    10.53% { background-color: var(--spectrum-3); }   /* 85% 명도 */
+    15.79% { background-color: var(--spectrum-4); }   /* 80% 명도 */
+    21.05% { background-color: var(--spectrum-5); }   /* 75% 명도 */
+    26.32% { background-color: var(--spectrum-6); }   /* 70% 명도 */
+    31.58% { background-color: var(--spectrum-7); }   /* 65% 명도 */
+    36.84% { background-color: var(--spectrum-8); }   /* 60% 명도 */
+    42.11% { background-color: var(--spectrum-9); }   /* 55% 명도 */
+    47.37% { background-color: var(--spectrum-10); }  /* 50% 명도 */
+    52.63% { background-color: var(--spectrum-11); }  /* 45% 명도 */
+    57.89% { background-color: var(--spectrum-12); }  /* 40% 명도 */
+    63.16% { background-color: var(--spectrum-13); }  /* 35% 명도 */
+    68.42% { background-color: var(--spectrum-14); }  /* 30% 명도 */
+    73.68% { background-color: var(--spectrum-15); }  /* 25% 명도 */
+    78.95% { background-color: var(--spectrum-16); }  /* 20% 명도 - 기준과 가장 가까움 */
+    84.21% { background-color: var(--spectrum-17); }  /* 15% 명도 */
+    89.47% { background-color: var(--spectrum-18); }  /* 10% 명도 */
+    94.74% { background-color: var(--spectrum-19); }  /* 5% 명도 */
+    100% { background-color: var(--spectrum-19); }    /* 5% 명도 */
+} 

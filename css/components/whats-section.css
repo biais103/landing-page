@@ -1,0 +1,77 @@
+/* Whats Section Component */
+.whats-section {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 섹션별 배경색 */
+.whats-section__bg{
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.bg-1 {
+    background-color: var(--color-blue);
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-2 {
+    background-color: var(--color-green);
+}
+
+
+
+
+/* 타이틀 컨테이너 - 가로세로 정중앙 */
+.whats-section__content {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.whats-section__title {
+    font-weight: 700;
+    font-size: 3rem;
+    text-align: center;
+    line-height: 1.2;
+    color: #ffffff;
+    transform: translateY(-20%);
+    z-index: 2;
+}
+
+/* 스크롤 화살표 - 섹션 하단에서 100px 위 */
+.scroll-arrow__container {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.scroll-arrow__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.scroll-arrow__icon {
+    color: #ffffff;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.scroll-arrow__icon:hover {
+    opacity: 1;
+} 

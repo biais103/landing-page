@@ -6,9 +6,17 @@
 @import "components/header_nav.css";
 @import "components/feature.css";
 @import "components/rotate-3d.css";
-@import "components/rotate-overlay.css";
+@import "components/cosmic-breathing-star.css";
+@import "components/whats-section.css";
+@import "components/whats-scroll-arrow.css";
+@import "components/grid-container.css";
+@import "components/lightness-spectrum.css";
+
+
 /* Screens */
 @import "screens/index.css";
+@import "screens/intro.css";
+@import "screens/rotate-overlay.css";
 
 html {
   /* scroll-behavior: smooth; */ /* 딱딱한 스냅을 위해 제거 */
@@ -24,4 +32,3 @@ body {
     background-color: black;
     padding-top: 60px; /* 고정 헤더 높이만큼 패딩 추가 */
 }
-

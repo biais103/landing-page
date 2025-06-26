@@ -34,10 +34,12 @@
         </div>
     </div>
 
+    <!-- 호흡하는 효과의 별-->
     <div class="cosmic-breathing-star">
         <div class="breathing-star" style="--delay: 0s; --x: 50%; --y: 50%;"></div>
     </div>
     
+    <!-- 인트로 섹션 -->
     <section class="intro-section" id="intro">
         <div class="intro-container">
         </div>
@@ -64,172 +66,44 @@
     </header>
  
     <main class="main-screen">
-        <!-- Whats 섹션들을 위한 스티키 컨테이너 -->
-        <div class="whats-sticky-container" id="whats">
-            <section class="whats-section active" id="whats-1" data-section="1">
-                <div class="whats-container">
-                    <h1 class="whats-main-title">
-                        <span class="title-line">
-                            <span class="char">클</span><span class="char">릭&nbsp;</span><span class="char"> </span><span class="char">한&nbsp;</span><span class="char"> </span><span class="char">번</span><span class="char">으</span><span class="char">로</span>
-                        </span>
-                        <span class="title-line">
-                            <span class="char">고</span><span class="char">객</span><span class="char">의&nbsp;</span><span class="char"> </span><span class="char">시</span><span class="char">선</span><span class="char">을&nbsp;</span><span class="char"> </span><span class="char">끌</span><span class="char">어</span><span class="char">당</span><span class="char">긴</span><span class="char">다</span><span class="char">면</span><span class="char">?</span>
-                        </span>
+        <div class="main-screen__container">
+            <section class="whats-section">
+                <div class="whats-section__bg bg-1">
+                    <div class="whats-section__content">
+                        <h1 class="whats-section__title">
+                                클릭 한 번으로<br>
+                                고객의 시선을 끌어당긴다면?
+                        </h1>
+                    </div>
+                </div>
+                <div class="scroll-arrow__container">
+                    <div class="scroll-arrow__wrapper">
+                        <div class="scroll-arrow__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 13L12 18L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M7 6L12 11L17 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="whats-section">
+                <div class="whats-section__bg bg-2"></div>
+                <div class="whats-section__content">
+                    <h1 class="whats-section__title">
+                            스크롤에 반응하고,<br>
+                            클릭에 살아나는 웹
                     </h1>
-                    <div class="whats-scroll-arrow">
-                        <div class="scroll-arrow">
-                            <div class="scroll-arrow__icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 13L12 18L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M7 6L12 11L17 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="scroll-arrow__text">Scroll</div>
-                        </div>
-                    </div>
                 </div>
             </section>
-            <section class="whats-section" id="whats-2" data-section="2">
-                <div class="whats-container">
-                    <p class="whats-description">
-                        스크롤에 반응하고, 클릭에 살아나는 웹
-                    </p>
-                </div>
-            </section>
-            <section class="whats-section" id="whats-3" data-section="3">
-                <div class="whats-container">
-                    <p class="whats-subtitle">
-                        <span class="whats-subtitle-line1">단순히 '보여주는' 것을 넘어,</span><br>
-                        <span class="whats-subtitle-line2">직접 '느끼게' 하세요.</span>
-                    </p>
-                </div>
-            </section>
-            <section class="whats-section" id="whats-4" data-section="4">
-                <div class="whats-container" id="whats-4__container">
-                    <p class="whats-highlight">
-                        우리는 인터랙티브 웹사이트를 제작합니다.
-                    </p>
-                    <div class="whats-scroll-arrow">
-                        <div class="scroll-arrow">
-                            <div class="scroll-arrow__icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 13L12 18L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M7 6L12 11L17 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="scroll-arrow__text">스크롤하여 더 알아보기</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- 스크롤 스페이서 - 각 섹션을 위한 스크롤 영역 확보 -->
-            <div class="whats-scroll-spacer"></div>
         </div>
-
-        <!-- Benefit 섹션 -->
-        <section class="benefit-section" id="benefit-1">
-            <div class="benefit-headline">
-                <h2 class="benefit-headline__title">
-                    둘 중 어느 곳에 시선이 머무르시나요?
-                </h2>
-            </div>
-            <div class="benefit-container">
-                <div class="benefit-left">
-                    <h2 class="benefit-left__title">일반적인 웹사이트</h2>
-                    <div class="benefit-left__model">
-                        <div class="static-model-placeholder">
-                            <img src="images/01-index-images/02-static-chair.jpg" alt="정적 이미지" class="static-chair-image">
-                        </div>
-                    </div>
-                </div>
-                <div class="benefit-right">
-                    <h2 class="benefit-right__title">인터랙티브 웹사이트</h2>
-                    <div class="benefit-right__content">
-                        <!-- 3D 모델 표시 영역 -->
-                        <div class="rotate-3d__model-container">
-                            <div class="rotate-3d__instruction">마우스 드래그 및 스크롤 해보세요</div>
-                            <div class="rotate-3d__model" id="rotate-3d__model"></div>
-                        </div>
-
-                         <!-- 푸터 정보 영역 -->
-                        <div class="rotate-3d__footer">
-                            <div class="rotate-3d__footer-column">2025.06.19</div>
-                            <div class="rotate-3d__footer-column">BIAIS</div>
-                            <div class="rotate-3d__footer-column">Interactive</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="benefit-section" id="benefit-2">
-            <div class="benefit-description">
-                <div class="benefit-description__text">
-                    움직이는 요소에 시선이 향하는 것은 매우 자연스러운 현상입니다.
-                </div>
-            </div>
-        </section>
-        <section class="features-section" id="features">
-            <div class="features-headline">
-                <h2 class="features-headline__title">
-                    인터랙티브 기능 예시
-                </h2>
-            </div>
-            <div class="features-container">
-                <div class="feature-card">
-                    <div class="feature-card__media">
-                        <img src="images/02-gif/rotate-3d.gif" alt="3D 회전 기능" class="feature-card__gif">
-                    </div>
-                    <div class="feature-card__description">
-                        마우스 드래그 및 스크롤 기능
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-card__media">
-                        <img src="images/02-gif/wheel-move.gif" alt="휠 이동 기능" class="feature-card__gif">
-                    </div>
-                    <div class="feature-card__description">
-                        스크롤 기반 제품구조 확인 기능
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-card__media">
-                        <img src="images/02-gif/img-scale-scroll.gif" alt="이미지 스케일 기능" class="feature-card__gif">
-                    </div>
-                    <div class="feature-card__description">
-                        스크롤 기반 이미지 스케일 변환 기능
-                    </div>
-                </div>
-            </div>
-            <div class="feature-description">
-                <div class="feature-description__text">
-                    이 외에도 다양한 기능들을 추가할 수 있습니다.
-                </div>
-            </div>
-        </section>
-        <section class="contact-section" id="contact">
-            <div class="contact-headline">
-                <h2 class="contact-headline__title">
-                    인터랙티브 웹사이트 제작 서비스, 7월 중 오픈 예정
-                </h2>
-            </div>
-            <div class="contact-container">
-                <div class="contact-container__text">
-                    서비스 오픈에 대한 알림 받기를 원하신다면,<br>이메일 입력 후 알림 받기 버튼을 클릭해주세요.
-                </div>
-                <div class="contact-container__input">
-                    <input type="email" placeholder="이메일을 입력해주세요">
-                </div>
-                
-                <button class="contact-container__button">
-                    알림 받기
-                </button>
-            </div>
-        </section>
     </main>
 
     <!-- ES 모듈 방식으로 분리된 JS 파일 로드 -->
-    <script type="module" src="./js/main-interactions.js"></script>
-    <script type="module" src="./js/rotate-3d.js"></script>
-    <script src="./js/rotate-overlay.js"></script>
+    <script type="module" src="./js/intro.js"></script>
+    <script type="module" src="./js/components/rotate-3d.js"></script>
+    <script src="./js/components/rotate-overlay.js"></script>
+    <script src="./js/components/grid-container.js"></script>
+    <script src="./js/components/whats-section.js"></script>
 </body>
 </html>
