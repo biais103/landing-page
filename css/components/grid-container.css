@@ -1,12 +1,13 @@
 .grid-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--grid-size, 100vmin); /* 기본값: 뷰포트의 작은 쪽 기준 */
+    height: var(--grid-size, 100vmin);
     display: grid;
-    grid-template-columns: repeat(16, 1fr);
-    grid-template-rows: repeat(16, 1fr);
+    grid-template-columns: repeat(16, var(--cell-size, 6.25vmin));
+    grid-template-rows: repeat(16, var(--cell-size, 6.25vmin));
     gap: 0;
     pointer-events: auto;
     z-index: 1;
@@ -14,7 +15,7 @@
 
 .grid-cell {
     background-color: var(--color-blue);
-    cursor: pointer;
+    cursor: default;
     border: none;
     outline: none;
 }
@@ -25,8 +26,12 @@
 }
 
 .grid-cell.spectrum-animating {
-    animation: lightnessSpectrum 3s ease-in-out forwards;
+    animation: lightnessSpectrumWithOpacity 3s ease-in-out forwards;
     transform: rotateY(180deg); /* 뒤집어진 상태 유지 */
+}
+
+.grid-cell.final-flip-animating {
+    animation: finalFlipToOriginal 2s ease-in-out forwards;
 }
 
 /* 간단한 회전 + 색상 변화 */
@@ -41,26 +46,64 @@
     }
 }
 
-/* --color-blue 기준 명도 스펙트럼 애니메이션 (19단계 - 역순) */
+/* --color-blue 기준 명도 스펙트럼 애니메이션 (18단계 - 기준 색상 제외) */
 @keyframes lightnessSpectrum {
     0% { background-color: var(--spectrum-1); }       /* 95% 명도 */
-    5.26% { background-color: var(--spectrum-2); }    /* 90% 명도 */
-    10.53% { background-color: var(--spectrum-3); }   /* 85% 명도 */
-    15.79% { background-color: var(--spectrum-4); }   /* 80% 명도 */
-    21.05% { background-color: var(--spectrum-5); }   /* 75% 명도 */
-    26.32% { background-color: var(--spectrum-6); }   /* 70% 명도 */
-    31.58% { background-color: var(--spectrum-7); }   /* 65% 명도 */
-    36.84% { background-color: var(--spectrum-8); }   /* 60% 명도 */
-    42.11% { background-color: var(--spectrum-9); }   /* 55% 명도 */
-    47.37% { background-color: var(--spectrum-10); }  /* 50% 명도 */
-    52.63% { background-color: var(--spectrum-11); }  /* 45% 명도 */
-    57.89% { background-color: var(--spectrum-12); }  /* 40% 명도 */
-    63.16% { background-color: var(--spectrum-13); }  /* 35% 명도 */
-    68.42% { background-color: var(--spectrum-14); }  /* 30% 명도 */
-    73.68% { background-color: var(--spectrum-15); }  /* 25% 명도 */
-    78.95% { background-color: var(--spectrum-16); }  /* 20% 명도 - 기준과 가장 가까움 */
-    84.21% { background-color: var(--spectrum-17); }  /* 15% 명도 */
-    89.47% { background-color: var(--spectrum-18); }  /* 10% 명도 */
-    94.74% { background-color: var(--spectrum-19); }  /* 5% 명도 */
-    100% { background-color: var(--spectrum-19); }    /* 5% 명도 */
-} 
+    5.56% { background-color: var(--spectrum-2); }    /* 90% 명도 */
+    11.11% { background-color: var(--spectrum-3); }   /* 85% 명도 */
+    16.67% { background-color: var(--spectrum-4); }   /* 80% 명도 */
+    22.22% { background-color: var(--spectrum-5); }   /* 75% 명도 */
+    27.78% { background-color: var(--spectrum-6); }   /* 70% 명도 */
+    33.33% { background-color: var(--spectrum-7); }   /* 65% 명도 */
+    38.89% { background-color: var(--spectrum-8); }   /* 60% 명도 */
+    44.44% { background-color: var(--spectrum-9); }   /* 55% 명도 */
+    50% { background-color: var(--spectrum-10); }     /* 50% 명도 */
+    55.56% { background-color: var(--spectrum-11); }  /* 45% 명도 */
+    61.11% { background-color: var(--spectrum-12); }  /* 40% 명도 */
+    66.67% { background-color: var(--spectrum-13); }  /* 35% 명도 */
+    72.22% { background-color: var(--spectrum-14); }  /* 30% 명도 */
+    77.78% { background-color: var(--spectrum-15); }  /* 25% 명도 */
+    83.33% { background-color: var(--spectrum-16); }  /* 15% 명도 */
+    88.89% { background-color: var(--spectrum-17); }  /* 10% 명도 */
+    94.44% { background-color: var(--spectrum-18); }  /* 5% 명도 */
+    100% { background-color: var(--spectrum-18); }    /* 5% 명도 */
+}
+
+/* 2단계: 투명도 + 명도 스펙트럼 + 모양 변화 애니메이션 (3초) - 18단계 */
+@keyframes lightnessSpectrumWithOpacity {
+    /* 끊김 없는 부드러운 변화 */
+    0% { 
+        background-color: var(--spectrum-1); 
+        opacity: 1; 
+        border-radius: 0%; /* 사각형 시작 */
+    }
+    33.33% { 
+        background-color: var(--spectrum-1); 
+        opacity: 0.3; 
+        border-radius: 50%; /* 원형 도달 */
+    }
+    50% { 
+        background-color: var(--spectrum-9); 
+        opacity: 0.75; 
+        border-radius: 50%; /* 원형 유지 */
+    }
+    100% { 
+        background-color: var(--spectrum-18); 
+        opacity: 1; 
+        border-radius: 0%; /* 사각형 완료 */
+    }
+}
+
+/* 3단계: 마지막 스펙트럼 색상에서 Y축 180도 회전하면서 기준 색상으로 복귀 (2초) */
+@keyframes finalFlipToOriginal {
+    0% {
+        background-color: var(--spectrum-18); /* 5% 명도 (마지막 스펙트럼) */
+        transform: rotateY(180deg);
+        opacity: 1;
+    }
+    100% {
+        background-color: var(--color-blue); /* 기준 색상으로 복귀 */
+        transform: rotateY(360deg); /* 360도 회전으로 원래 상태 */
+        opacity: 1;
+    }
+}

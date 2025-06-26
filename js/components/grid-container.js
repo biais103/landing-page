@@ -7,6 +7,7 @@ class GridContainer {
         this.animatingCells = new Set(); // 현재 애니메이션 중인 셀들을 추적
         this.blueSpectrum = this.generateBlueSpectrum(); // --color-blue 기준 명도 스펙트럼
         this.setupSpectrumVariables(); // CSS 커스텀 속성 설정
+        this.setupResizeListener(); // 창 크기 변경 감지
     }
 
     // --color-blue (#003962) 기준 명도 스펙트럼 생성
@@ -15,18 +16,22 @@ class GridContainer {
         const hsl = this.hexToHsl(baseColor);
         const inputLightness = hsl.l; // 실제 명도 (약 19%)
         
-        // 19단계 고정 명도 범위 (역순)
-        const lightnessSteps = [95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5];
+        // 19단계 고정 명도 범위 (기준 찾기용)
+        const allLightnessSteps = [95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5];
         
         // 입력 색상의 명도와 가장 가까운 단계 찾기
-        const closestStep = lightnessSteps.reduce((closest, current) => {
+        const closestStep = allLightnessSteps.reduce((closest, current) => {
             return Math.abs(current - inputLightness) < Math.abs(closest - inputLightness) ? current : closest;
         });
         
-        console.log(`입력 색상 명도: ${inputLightness}%, 가장 가까운 단계: ${closestStep}%`);
+        // 기준 색상을 제외한 18단계 스펙트럼 생성
+        const spectrumSteps = allLightnessSteps.filter(step => step !== closestStep);
         
-        // 전체 19단계 스펙트럼 생성 (HSL의 H, S는 기준 색상과 동일)
-        return lightnessSteps.map(lightness => this.hslToHex(hsl.h, hsl.s, lightness));
+        console.log(`입력 색상 명도: ${inputLightness}%, 가장 가까운 단계: ${closestStep}% (제외됨)`);
+        console.log(`스펙트럼 단계 (18개):`, spectrumSteps);
+        
+        // 18단계 스펙트럼 생성 (HSL의 H, S는 기준 색상과 동일)
+        return spectrumSteps.map(lightness => this.hslToHex(hsl.h, hsl.s, lightness));
     }
 
     // HEX를 HSL로 변환
@@ -101,12 +106,43 @@ class GridContainer {
     setupSpectrumVariables() {
         const root = document.documentElement;
         
-        // 19단계 색상을 CSS 변수로 설정
+        // 18단계 색상을 CSS 변수로 설정
         this.blueSpectrum.forEach((color, index) => {
             root.style.setProperty(`--spectrum-${index + 1}`, color);
         });
         
         console.log('명도 스펙트럼 색상들:', this.blueSpectrum);
+    }
+
+    // 정사각형 격자 크기 계산 및 설정
+    calculateSquareGridSize() {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // 뷰포트의 너비와 높이 중 작은 값을 기준으로 함
+        const minDimension = Math.min(viewportWidth, viewportHeight);
+        
+        // 16x16 격자이므로 각 셀의 크기는 minDimension / 16
+        const cellSize = minDimension / 16;
+        const gridSize = cellSize * 16; // 정확한 격자 크기
+        
+        // CSS 커스텀 속성으로 설정
+        const root = document.documentElement;
+        root.style.setProperty('--grid-size', `${gridSize}px`);
+        root.style.setProperty('--cell-size', `${cellSize}px`);
+        
+        console.log(`격자 크기 계산: ${gridSize}px (셀 크기: ${cellSize}px)`);
+    }
+
+    // 창 크기 변경 감지 설정
+    setupResizeListener() {
+        // 초기 크기 설정
+        this.calculateSquareGridSize();
+        
+        // 창 크기 변경 시 재계산
+        window.addEventListener('resize', () => {
+            this.calculateSquareGridSize();
+        });
     }
 
     // 격자 생성
@@ -182,10 +218,16 @@ class GridContainer {
             gridCell.classList.remove('animating');
             gridCell.classList.add('spectrum-animating');
             
-            // 3초 후 전체 애니메이션 완료
+            // 3초 후 2단계 완료, 3단계 시작
             setTimeout(() => {
-                this.animatingCells.delete(gridCell);
                 gridCell.classList.remove('spectrum-animating');
+                gridCell.classList.add('final-flip-animating');
+                
+                // 2초 후 전체 애니메이션 완료
+                setTimeout(() => {
+                    this.animatingCells.delete(gridCell);
+                    gridCell.classList.remove('final-flip-animating');
+                }, 2000);
             }, 3000);
         }, 2000);
     }
@@ -194,7 +236,7 @@ class GridContainer {
     scheduleColorReset(gridCell) {
         // 애니메이션이 진행 중인지 확인
         if (this.animatingCells.has(gridCell)) {
-            // 전체 애니메이션(1단계 + 2단계)이 완료될 때까지 기다림 (총 5초)
+            // 전체 애니메이션(1단계 + 2단계 + 3단계)이 완료될 때까지 기다림 (총 7초)
             const checkAnimation = () => {
                 if (!this.animatingCells.has(gridCell)) {
                     // 애니메이션 완료 후 원래 색상으로 복원
