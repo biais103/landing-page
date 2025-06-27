@@ -2,6 +2,10 @@
 <html lang="ko">
 <head>
     <link rel="stylesheet" href="css/styles.css">
+    <!-- 새로운 CSS 파일들 추가 -->
+    <link rel="stylesheet" href="css/components/whats-section-new.css">
+    <link rel="stylesheet" href="css/components/grid-container-new.css">
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인터랙티브 웹사이트</title>
@@ -67,14 +71,19 @@
  
     <main class="main-screen">
         <div class="main-screen__container">
-            <section class="whats-section">
+            <!-- intro 섹션 -->
+            <section class="whats-section whats-section--intro">
+                
+            <!-- 첫 번째 섹션 - 격자 효과와 함께 (맨 앞 레이어) -->
+            <section class="whats-section whats-section--first">
                 <div class="whats-section__bg bg-1">
-                    <div class="whats-section__content">
-                        <h1 class="whats-section__title">
-                                클릭 한 번으로<br>
-                                고객의 시선을 끌어당긴다면?
-                        </h1>
-                    </div>
+                    <!-- 격자 컨테이너는 JavaScript로 동적 생성됨 -->
+                </div>
+                <div class="whats-section__content">
+                    <h1 class="whats-section__title">
+                        클릭 한 번으로<br>
+                        고객의 시선을 끌어당긴다면?
+                    </h1>
                 </div>
                 <div class="scroll-arrow__container">
                     <div class="scroll-arrow__wrapper">
@@ -87,12 +96,14 @@
                     </div>
                 </div>
             </section>
-            <section class="whats-section">
+            
+            <!-- 두 번째 섹션 - 뒤에 숨어있음 -->
+            <section class="whats-section whats-section--second">
                 <div class="whats-section__bg bg-2"></div>
                 <div class="whats-section__content">
                     <h1 class="whats-section__title">
-                            스크롤에 반응하고,<br>
-                            클릭에 살아나는 웹
+                        스크롤에 반응하고,<br>
+                        클릭에 살아나는 웹
                     </h1>
                 </div>
             </section>
@@ -104,6 +115,6 @@
     <script type="module" src="./js/components/rotate-3d.js"></script>
     <script src="./js/components/rotate-overlay.js"></script>
     <script src="./js/components/grid-container.js"></script>
-    <script src="./js/components/whats-section.js"></script>
+    <script src="./js/components/whats-section-new.js"></script>
 </body>
 </html>

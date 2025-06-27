@@ -1,0 +1,116 @@
+/* 새로운 Whats Section Component - 겹치는 레이어 구조 */
+
+.main-screen__container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden; /* 슬라이드 효과를 위해 */
+}
+
+/* 두 섹션을 같은 위치에 겹치게 배치 */
+.whats-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 첫 번째 섹션 - 맨 앞 레이어 */
+.whats-section--first {
+    z-index: 10;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* 두 번째 섹션 - 뒤 레이어 */
+.whats-section--second {
+    z-index: 5;
+    transform: translateY(0);
+    opacity: 0; /* 처음에는 투명 */
+}
+
+/* 슬라이드 아웃 상태 */
+.whats-section--first.slide-out {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+/* 페이드 인 상태 */
+.whats-section--second.fade-in {
+    opacity: 1;
+}
+
+/* 섹션별 배경색 */
+.whats-section__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.bg-1 {
+    background-color: var(--color-yellow);
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-2 {
+    background-color: var(--spectrum-20);
+}
+
+/* 타이틀 컨테이너 */
+.whats-section__content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: 10; /* 격자보다 위 */
+    pointer-events: none; /* 격자 클릭 방해 안하도록 */
+}
+
+.whats-section__content * {
+    pointer-events: auto; /* 콘텐츠는 클릭 가능하게 */
+}
+
+.whats-section__title {
+    font-weight: 700;
+    font-size: 3rem;
+    text-align: center;
+    line-height: 1.2;
+    color: #ffffff;
+    transform: translateY(-20%);
+    z-index: 4;
+}
+
+/* 스크롤 화살표 */
+.scroll-arrow__container {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+}
+
+.scroll-arrow__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.scroll-arrow__icon {
+    color: #ffffff;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.scroll-arrow__icon:hover {
+    opacity: 1;
+}
