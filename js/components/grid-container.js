@@ -5,113 +5,7 @@ class GridContainer {
         this.gridContainer = null;
         this.gridCells = [];
         this.animatingCells = new Set(); // 현재 애니메이션 중인 셀들을 추적
-        this.blueSpectrum = this.generateBlueSpectrum(); // --color-blue 기준 명도 스펙트럼
-        this.setupSpectrumVariables(); // CSS 커스텀 속성 설정
         this.setupResizeListener(); // 창 크기 변경 감지
-    }
-
-    // --color-blue (#003962) 기준 명도 스펙트럼 생성
-    generateBlueSpectrum() {
-        const baseColor = '#003962'; // --color-blue
-        const hsl = this.hexToHsl(baseColor);
-        const inputLightness = hsl.l; // 실제 명도 (약 19%)
-        
-        // 19단계 고정 명도 범위 (기준 찾기용)
-        const allLightnessSteps = [95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 15, 10, 5];
-        
-        // 입력 색상의 명도와 가장 가까운 단계 찾기
-        const closestStep = allLightnessSteps.reduce((closest, current) => {
-            return Math.abs(current - inputLightness) < Math.abs(closest - inputLightness) ? current : closest;
-        });
-        
-        // 기준 색상을 제외한 18단계 스펙트럼 생성
-        const spectrumSteps = allLightnessSteps.filter(step => step !== closestStep);
-        
-        console.log(`입력 색상 명도: ${inputLightness}%, 가장 가까운 단계: ${closestStep}% (제외됨)`);
-        console.log(`스펙트럼 단계 (18개):`, spectrumSteps);
-        
-        // 18단계 스펙트럼 생성 (HSL의 H, S는 기준 색상과 동일)
-        return spectrumSteps.map(lightness => this.hslToHex(hsl.h, hsl.s, lightness));
-    }
-
-    // HEX를 HSL로 변환
-    hexToHsl(hex) {
-        const r = parseInt(hex.slice(1, 3), 16) / 255;
-        const g = parseInt(hex.slice(3, 5), 16) / 255;
-        const b = parseInt(hex.slice(5, 7), 16) / 255;
-
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
-        let h, s, l;
-
-        l = (max + min) / 2;
-
-        if (max === min) {
-            h = s = 0;
-        } else {
-            const d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-            switch (max) {
-                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                case g: h = (b - r) / d + 2; break;
-                case b: h = (r - g) / d + 4; break;
-            }
-            h /= 6;
-        }
-
-        return {
-            h: Math.round(h * 360),
-            s: Math.round(s * 100),
-            l: Math.round(l * 100)
-        };
-    }
-
-    // HSL을 HEX로 변환
-    hslToHex(h, s, l) {
-        h /= 360;
-        s /= 100;
-        l /= 100;
-
-        const hue2rgb = (p, q, t) => {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1/6) return p + (q - p) * 6 * t;
-            if (t < 1/2) return q;
-            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-            return p;
-        };
-
-        let r, g, b;
-
-        if (s === 0) {
-            r = g = b = l;
-        } else {
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1/3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1/3);
-        }
-
-        const toHex = (c) => {
-            const hex = Math.round(c * 255).toString(16);
-            return hex.length === 1 ? '0' + hex : hex;
-        };
-
-        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-    }
-
-    // CSS 커스텀 속성으로 스펙트럼 색상 설정
-    setupSpectrumVariables() {
-        const root = document.documentElement;
-        
-        // 18단계 색상을 CSS 변수로 설정
-        this.blueSpectrum.forEach((color, index) => {
-            root.style.setProperty(`--spectrum-${index + 1}`, color);
-        });
-        
-        console.log('명도 스펙트럼 색상들:', this.blueSpectrum);
     }
 
     // 정사각형 격자 크기 계산 및 설정
@@ -181,49 +75,44 @@ class GridContainer {
 
     // 마우스 호버 효과 추가
     addHoverEffect(gridCell) {
-        let isHovering = false;
-        
         gridCell.addEventListener('mouseenter', () => {
-            isHovering = true;
-            this.startColorAnimation(gridCell, isHovering);
+            this.startHoverAnimation(gridCell);
         });
 
         gridCell.addEventListener('mouseleave', () => {
-            isHovering = false;
-            // 애니메이션이 완료될 때까지 기다린 후 원래 색상으로 복원
             this.scheduleColorReset(gridCell);
         });
     }
 
-    // 색상 애니메이션 시작 (명도 스펙트럼만)
-    startColorAnimation(gridCell) {
+    // 호버 애니메이션 시작
+    startHoverAnimation(gridCell) {
         // 이미 애니메이션 중이면 중단하고 다시 시작
         if (this.animatingCells.has(gridCell)) {
-            gridCell.classList.remove('spectrum-only-animating');
+            gridCell.classList.remove('hover-animating');
             this.animatingCells.delete(gridCell);
             // 짧은 지연 후 다시 시작하여 애니메이션 리셋
             setTimeout(() => {
-                this.startColorAnimation(gridCell);
+                this.startHoverAnimation(gridCell);
             }, 10);
             return;
         }
 
-        // 명도 스펙트럼 애니메이션 시작
+        // 호버 애니메이션 시작
         this.animatingCells.add(gridCell);
-        gridCell.classList.add('spectrum-only-animating');
+        gridCell.classList.add('hover-animating');
 
-        // 3초 후 애니메이션 완료
+        // 1.5초 후 애니메이션 완료
         setTimeout(() => {
             this.animatingCells.delete(gridCell);
-            gridCell.classList.remove('spectrum-only-animating');
-        }, 3000);
+            gridCell.classList.remove('hover-animating');
+        }, 1500);
     }
 
     // 색상 리셋 스케줄링
     scheduleColorReset(gridCell) {
         // 애니메이션이 진행 중인지 확인
         if (this.animatingCells.has(gridCell)) {
-            // 명도 스펙트럼 애니메이션이 완료될 때까지 기다림 (3초)
+            // 애니메이션이 완료될 때까지 기다림 (1.5초)
             const checkAnimation = () => {
                 if (!this.animatingCells.has(gridCell)) {
                     // 애니메이션 완료 후 원래 색상으로 복원
@@ -251,12 +140,12 @@ class GridContainer {
         this.animatingCells.clear();
     }
 
-    // 랜덤 색상 생성
+    // 미리 정의된 색상 팔레트에서 랜덤 색상 생성
     generateRandomColor() {
         const colors = [
             '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
             '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-            '#F8C471', '#82E0AA', '#F1948A', '#85929E', '#D2B4DE'
+            '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     }
@@ -314,7 +203,7 @@ class GridContainer {
     // 모든 셀 색상 초기화 (기본 blue로 복원)
     clearColors() {
         this.gridCells.forEach(cell => {
-            cell.classList.remove('animating');
+            cell.classList.remove('hover-animating');
             cell.style.backgroundColor = '';
         });
         this.animatingCells.clear();
@@ -337,7 +226,11 @@ class GridContainer {
 }
 
 // 전역에서 사용할 수 있도록 export
-window.GridContainer = GridContainer;
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = GridContainer;
+} else {
+    window.GridContainer = GridContainer;
+}
 
 // 기본 인스턴스 생성 및 전역 변수로 설정
 window.gridContainer = new GridContainer(); 
