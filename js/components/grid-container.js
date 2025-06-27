@@ -1,4 +1,4 @@
-// Grid Container Component - 16x16 격자 생성 및 관리
+// Grid Container Component - 동적 격자 생성 및 관리
 
 class GridContainer {
     constructor() {
@@ -8,34 +8,60 @@ class GridContainer {
         this.setupResizeListener(); // 창 크기 변경 감지
     }
 
-    // 정사각형 격자 크기 계산 및 설정
-    calculateSquareGridSize() {
+    // 뷰포트에 맞는 격자 크기 계산
+    calculateGridDimensions() {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         
-        // 뷰포트의 너비와 높이 중 작은 값을 기준으로 함
-        const minDimension = Math.min(viewportWidth, viewportHeight);
+        // 정사각형 셀 크기를 먼저 결정 (적당한 크기로)
+        const desiredCellSize = 24; // 24px 기준 셀 크기
         
-        // 16x16 격자이므로 각 셀의 크기는 minDimension / 16
-        const cellSize = minDimension / 16;
-        const gridSize = cellSize * 16; // 정확한 격자 크기
+        // 화면을 꽉 채우기 위한 격자 수 계산
+        const cols = Math.ceil(viewportWidth / desiredCellSize);
+        const rows = Math.ceil(viewportHeight / desiredCellSize);
         
-        // CSS 커스텀 속성으로 설정
-        const root = document.documentElement;
-        root.style.setProperty('--grid-size', `${gridSize}px`);
-        root.style.setProperty('--cell-size', `${cellSize}px`);
+        // 실제 셀 크기를 화면에 맞춰 조정 (정사각형 유지)
+        const actualCellWidth = viewportWidth / cols;
+        const actualCellHeight = viewportHeight / rows;
         
-        console.log(`격자 크기 계산: ${gridSize}px (셀 크기: ${cellSize}px)`);
+        // 정사각형을 유지하기 위해 더 작은 값 사용
+        const cellSize = Math.min(actualCellWidth, actualCellHeight);
+        
+        // 최종 격자 수 재계산 (화면을 꽉 채우도록)
+        const finalCols = Math.ceil(viewportWidth / cellSize);
+        const finalRows = Math.ceil(viewportHeight / cellSize);
+        
+        console.log(`격자 계산: ${finalCols}x${finalRows} (총 ${finalCols * finalRows}개 셀)`);
+        console.log(`셀 크기: ${cellSize.toFixed(2)}x${cellSize.toFixed(2)}px`);
+        console.log(`뷰포트: ${viewportWidth}x${viewportHeight}px`);
+        
+        return {
+            cols: finalCols,
+            rows: finalRows,
+            totalCells: finalCols * finalRows,
+            cellWidth: cellSize,
+            cellHeight: cellSize
+        };
+    }
+
+    // CSS 그리드 설정
+    setupGridCSS(dimensions) {
+        const { cols, rows, cellWidth, cellHeight } = dimensions;
+        
+        // 격자가 화면을 완전히 채우도록 설정
+        this.gridContainer.style.width = '100vw';
+        this.gridContainer.style.height = '100vh';
+        this.gridContainer.style.gridTemplateColumns = `repeat(${cols}, ${cellWidth}px)`;
+        this.gridContainer.style.gridTemplateRows = `repeat(${rows}, ${cellHeight}px)`;
     }
 
     // 창 크기 변경 감지 설정
     setupResizeListener() {
-        // 초기 크기 설정
-        this.calculateSquareGridSize();
-        
-        // 창 크기 변경 시 재계산
+        // 창 크기 변경 시 격자 재생성
         window.addEventListener('resize', () => {
-            this.calculateSquareGridSize();
+            if (this.gridContainer && this.gridContainer.parentElement) {
+                this.createGrid(this.gridContainer.parentElement);
+            }
         });
     }
 
@@ -49,12 +75,18 @@ class GridContainer {
         // 기존 격자가 있다면 제거
         this.removeGrid(targetElement);
 
+        // 격자 크기 계산
+        const dimensions = this.calculateGridDimensions();
+
         // 격자 컨테이너 생성
         this.gridContainer = document.createElement('div');
         this.gridContainer.className = 'grid-container';
+        
+        // CSS 그리드 설정
+        this.setupGridCSS(dimensions);
 
-        // 16x16 = 256개 격자 셀 생성
-        for (let i = 0; i < 256; i++) {
+        // 격자 셀 생성
+        for (let i = 0; i < dimensions.totalCells; i++) {
             const gridCell = document.createElement('div');
             gridCell.className = 'grid-cell';
             gridCell.dataset.index = i;
@@ -101,18 +133,18 @@ class GridContainer {
         this.animatingCells.add(gridCell);
         gridCell.classList.add('hover-animating');
 
-        // 1.5초 후 애니메이션 완료
+        // 3초 후 애니메이션 완료
         setTimeout(() => {
             this.animatingCells.delete(gridCell);
             gridCell.classList.remove('hover-animating');
-        }, 1500);
+        }, 3000);
     }
 
     // 색상 리셋 스케줄링
     scheduleColorReset(gridCell) {
         // 애니메이션이 진행 중인지 확인
         if (this.animatingCells.has(gridCell)) {
-            // 애니메이션이 완료될 때까지 기다림 (1.5초)
+            // 애니메이션이 완료될 때까지 기다림 (3초)
             const checkAnimation = () => {
                 if (!this.animatingCells.has(gridCell)) {
                     // 애니메이션 완료 후 원래 색상으로 복원
@@ -200,7 +232,7 @@ class GridContainer {
         }
     }
 
-    // 모든 셀 색상 초기화 (기본 blue로 복원)
+    // 모든 셀 색상 초기화 (기본 색상으로 복원)
     clearColors() {
         this.gridCells.forEach(cell => {
             cell.classList.remove('hover-animating');

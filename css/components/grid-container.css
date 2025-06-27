@@ -1,20 +1,18 @@
 .grid-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: var(--grid-size, 100vmin); /* 기본값: 뷰포트의 작은 쪽 기준 */
-    height: var(--grid-size, 100vmin);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     display: grid;
-    grid-template-columns: repeat(16, var(--cell-size, 6.25vmin));
-    grid-template-rows: repeat(16, var(--cell-size, 6.25vmin));
     gap: 0;
     pointer-events: auto;
     z-index: 1;
+    overflow: hidden;
 }
 
 .grid-cell {
-    background-color: var(--color-blue);
+    background-color: var(--spectrum-mid);
     cursor: default;
     border: none;
     outline: none;
@@ -23,18 +21,18 @@
 
 /* 호버 애니메이션 클래스 */
 .grid-cell.hover-animating {
-    animation: whiteToBlack 1.5s ease-in-out forwards;
+    animation: whiteToBlack 3s ease-in-out forwards;
 }
 
 /* 흰색 → 원래색 → 검은색 애니메이션 */
 @keyframes whiteToBlack {
     0% {
-        background-color: #ffffff; /* 흰색 시작 */
+        background-color: var(--spectrum-80); /* 명도 95% */
     }
     50% {
-        background-color: var(--color-blue); /* 중간에 원래색 */
+        background-color: var(--spectrum-mid); /* 중간에 원래색 */
     }
     100% {
-        background-color: #000000; /* 검은색 끝 */
+        background-color: var(--spectrum-20); /* 명도 5% */
     }
 }
