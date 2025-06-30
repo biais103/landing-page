@@ -26,7 +26,7 @@ function initIntroAnimation() {
             breathingStar.classList.add('exploding');
         }
         
-        // 2. 0.65초 후 main-screen 페이드인 시작 (기존 1.3초에서 절반 앞당김)
+        // 2. 0.65초 후 main-screen 페이드인 시작
         setTimeout(() => {
             mainScreen.classList.add('fade-in');
         }, 650);
@@ -37,12 +37,20 @@ function initIntroAnimation() {
             cosmicStar.classList.add('explode');
         }, 800);
         
-        // 4. 2초 후 요소들 완전 제거 및 스크롤 활성화
+        // 4. 1.5초 후 whats-section--intro 활성화
         setTimeout(() => {
+            // intro-section과 cosmic-star 완전 제거
             introSection.style.display = 'none';
             cosmicStar.style.display = 'none';
+            
+            // wheel-move intro 섹션 활성화
+            if (window.activateIntroSection) {
+                window.activateIntroSection();
+            }
+            
+            // 스크롤 활성화 (wheel-move가 스크롤을 제어함)
             document.body.style.overflow = 'auto';
-        }, 2000);
+        }, 1500);
     });
 }
 

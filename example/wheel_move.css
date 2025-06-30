@@ -1,0 +1,23 @@
+/* 컨테이너 설정 */
+.container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 이미지 기본 설정 */
+.image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+/* 활성화된 이미지 */
+.image.active {
+    display: block;
+}

@@ -7,7 +7,7 @@
     overflow: hidden; /* 슬라이드 효과를 위해 */
 }
 
-/* 두 섹션을 같은 위치에 겹치게 배치 */
+/* 모든 섹션을 같은 위치에 겹치게 배치 */
 .whats-section {
     position: absolute;
     top: 0;
@@ -18,10 +18,42 @@
                 opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 첫 번째 섹션 - 맨 앞 레이어 */
+/* intro 섹션 - 처음에는 숨김 */
+.whats-section--intro {
+    z-index: 15;
+    transform: translateY(0);
+    opacity: 0; /* 처음에는 숨김 */
+}
+
+/* intro 섹션이 활성화되었을 때 */
+.whats-section--intro.active {
+    opacity: 1;
+}
+
+/* intro 섹션 페이드아웃 상태 - z-index를 낮춰서 방해하지 않도록 */
+.whats-section--intro.fade-out {
+    opacity: 0;
+    z-index: 1; /* 다른 섹션들보다 뒤로 */
+    pointer-events: none; /* 클릭 이벤트 차단 */
+}
+
+/* intro 섹션이 완전히 비활성화되었을 때 */
+.whats-section--intro.deactivated {
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+    visibility: hidden; /* 완전히 숨김 */
+}
+
+/* 첫 번째 섹션 - 두 번째 레이어 */
 .whats-section--first {
     z-index: 10;
     transform: translateY(0);
+    opacity: 0; /* intro 다음에 나타남 */
+}
+
+/* 첫 번째 섹션이 intro 다음에 나타날 때 */
+.whats-section--first.fade-in-from-intro {
     opacity: 1;
 }
 
@@ -32,15 +64,39 @@
     opacity: 0; /* 처음에는 투명 */
 }
 
-/* 슬라이드 아웃 상태 */
+/* 슬라이드 아웃 상태 (기존 first → second 전환용) */
 .whats-section--first.slide-out {
     transform: translateY(-100%);
     opacity: 0;
 }
 
-/* 페이드 인 상태 */
+/* 페이드 인 상태 (기존 first → second 전환용) */
 .whats-section--second.fade-in {
     opacity: 1;
+}
+
+/* Wheel Move Container - intro 섹션용 */
+.wheel-move-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Wheel 이미지 기본 설정 */
+.wheel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+/* 활성화된 wheel 이미지 */
+.wheel-image.active {
+    display: block;
 }
 
 /* 섹션별 배경색 */
