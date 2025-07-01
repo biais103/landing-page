@@ -133,6 +133,13 @@
     opacity: 0; /* 처음에는 투명 */
 }
 
+/* 세 번째 섹션 - 맨 뒤 레이어 */
+.whats-section--third {
+    z-index: 3;
+    transform: translateY(0);
+    opacity: 0; /* 처음에는 투명 */
+}
+
 /* 슬라이드 아웃 상태 (기존 first → second 전환용) */
 .whats-section--first.slide-out {
     transform: translateY(-100%);
@@ -199,6 +206,10 @@
 
 .bg-2 {
     background-color: var(--spectrum-20);
+}
+
+.bg-3 {
+    background-color: var(--color-blue);
 }
 
 .bg-intro {
