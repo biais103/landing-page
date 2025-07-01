@@ -68,17 +68,18 @@ class LayeredSectionManager {
             // 위로 스크롤 - 역방향 전환들
             else if (currentScrollY < lastScrollY && timeSinceLastTransition > 500) {
                 if (this.isTransitioned) {
-                    // second → first
+                    // second → first (가장 우선순위)
                     console.log('스크롤: second → first 전환 트리거');
                     this.triggerBackTransition();
-                } else if (this.isMiddleToFirstTransitioned) {
-                    // first → middle
+                } else if (this.isMiddleToFirstTransitioned && !this.isTransitioned) {
+                    // first → middle (second가 비활성화된 상태에서만)
                     console.log('스크롤: first → middle 전환 트리거');
                     this.deactivateFirstToMiddle();
                 } else if (this.isIntroToMiddleTransitioned && 
+                          !this.isMiddleToFirstTransitioned &&
                           currentScrollY <= 10 && 
                           timeSinceLastTransition > 1000) {
-                    // middle → intro (조건을 더 까다롭게)
+                    // middle → intro (middle에서만, 조건을 더 까다롭게)
                     console.log('스크롤: middle → intro 전환 트리거');
                     this.triggerBackToIntro();
                 }
@@ -111,15 +112,15 @@ class LayeredSectionManager {
             } else if (event.code === 'ArrowUp') {
                 event.preventDefault();
                 if (this.isTransitioned && timeSinceLastTransition > 500) {
-                    // second → first
+                    // second → first (가장 우선순위)
                     console.log('키보드: second → first 전환 트리거');
                     this.triggerBackTransition();
-                } else if (this.isMiddleToFirstTransitioned && timeSinceLastTransition > 500) {
-                    // first → middle
+                } else if (this.isMiddleToFirstTransitioned && !this.isTransitioned && timeSinceLastTransition > 500) {
+                    // first → middle (second가 비활성화된 상태에서만)
                     console.log('키보드: first → middle 전환 트리거');
                     this.deactivateFirstToMiddle();
-                } else if (this.isIntroToMiddleTransitioned && timeSinceLastTransition > 1000) {
-                    // middle → intro (조건을 더 까다롭게)
+                } else if (this.isIntroToMiddleTransitioned && !this.isMiddleToFirstTransitioned && timeSinceLastTransition > 1000) {
+                    // middle → intro (middle에서만, 조건을 더 까다롭게)
                     console.log('키보드: middle → intro 전환 트리거');
                     this.triggerBackToIntro();
                 }
@@ -168,8 +169,18 @@ class LayeredSectionManager {
                 console.log('휠: first → second 전환 트리거');
                 this.triggerTransition();
             }
-            // first 섹션에서 위로 휠 시 middle로 전환
+            // second 섹션에서 위로 휠 시 first로 전환
+            else if (this.isTransitioned && 
+                event.deltaY < 0 && 
+                timeSinceLastTransition > 500) {
+                
+                event.preventDefault();
+                console.log('휠: second → first 전환 트리거');
+                this.triggerBackTransition();
+            }
+            // first 섹션에서 위로 휠 시 middle로 전환 (second가 비활성화된 상태에서만)
             else if (this.isMiddleToFirstTransitioned && 
+                !this.isTransitioned &&
                 event.deltaY < 0 && 
                 timeSinceLastTransition > 500) {
                 
@@ -251,32 +262,51 @@ class LayeredSectionManager {
 
     // middle에서 intro로 역전환 (3D 큐브 효과)
     deactivateMiddleToIntro() {
-        if (!this.isIntroToMiddleTransitioned) return;
+        if (!this.isIntroToMiddleTransitioned) {
+            console.log('deactivateMiddleToIntro: 이미 intro로 전환된 상태입니다.');
+            return;
+        }
+        
+        console.log('middle 섹션 3D 큐브 역전환 시작');
         
         this.isIntroToMiddleTransitioned = false;
         this.lastTransitionTime = Date.now();
         
-        // middle 섹션 3D 큐브 역전환
+        // middle 섹션 3D 큐브 역전환 (오른쪽으로 회전하면서 사라짐)
         this.middleSection.classList.remove('cube-rotate-in');
+        
+        // 강제로 브라우저가 DOM 변경을 인식하도록 reflow 트리거
+        this.middleSection.offsetHeight;
+        
         this.middleSection.classList.add('cube-rotate-out');
         
-        console.log('섹션 역전환 실행됨 (middle → intro) - 3D 큐브 좌우 회전');
+        console.log('middle 섹션 오른쪽으로 3D 큐브 회전하면서 사라짐, intro와 역방향 잘맞된 3D 큐브 전환 구현');
         
         // 전환 완료 후 콜백
         setTimeout(() => {
             this.onMiddleToIntroComplete();
             // 애니메이션 완료 후 클래스 정리
             this.middleSection.classList.remove('cube-rotate-out');
-        }, 1400); // 1.4초로 연장
+            console.log('middle 섹션 cube-rotate-out 클래스 제거됨');
+        }, 1400);
     }
 
-    // middle → intro 역전환 트리거
+    // middle → intro 역전환 트리거 (개선된 로직)
     triggerBackToIntro() {
+        console.log('middle → intro 역전환 시작');
+        
+        // middle → first 전환이 이미 시작된 상태라면 중단
+        if (this.isMiddleToFirstTransitioned) {
+            console.log('middle → first 전환이 이미 진행 중이므로 intro 역전환을 중단합니다.');
+            return;
+        }
+        
         if (window.wheelMoveIntro) {
+            // middle 섹션과 intro 섹션 동시에 3D 큐브 전환 시작
+            this.deactivateMiddleToIntro();
             window.wheelMoveIntro.triggerReverseTransition();
         } else {
             console.error('wheelMoveIntro가 존재하지 않습니다!');
-            // 직접 middle 섹션 비활성화 시도
             this.deactivateMiddleToIntro();
         }
     }
@@ -302,20 +332,29 @@ class LayeredSectionManager {
         }, 800);
     }
 
-    // second에서 first로 역전환 (기존 로직)
+    // second에서 first로 역전환 (수정된 로직)
     triggerBackTransition() {
         if (!this.isTransitioned) return;
         
         this.isTransitioned = false;
         this.lastTransitionTime = Date.now();
         
-        // 첫 번째 섹션 슬라이드 인
-        this.firstSection.classList.remove('slide-out');
-        
         // 두 번째 섹션 페이드 아웃
         this.secondSection.classList.remove('fade-in');
         
-        console.log('섹션 역전환 실행됨 (second → first)');
+        // 첫 번째 섹션 슬라이드 인 - 단, middle → first 전환이 완료된 상태인지 확인
+        if (this.isMiddleToFirstTransitioned) {
+            this.firstSection.classList.remove('slide-out');
+            // first 섹션이 다시 보이도록 fade-in-from-intro 클래스 유지
+            if (!this.firstSection.classList.contains('fade-in-from-intro')) {
+                this.firstSection.classList.add('fade-in-from-intro');
+            }
+        }
+        
+        console.log('섹션 역전환 실행됨 (second → first)', {
+            isMiddleToFirstTransitioned: this.isMiddleToFirstTransitioned,
+            isTransitioned: this.isTransitioned
+        });
     }
 
     // 부드러운 스크롤 - 다음 섹션으로

@@ -116,6 +116,8 @@ class WheelMoveIntro {
         // 새 이미지 보이기
         if (this.images[index]) {
             this.images[index].classList.add('active');
+        } else {
+            console.error(`이미지 인덱스 ${index}가 올바르지 않습니다.`);
         }
         
         // 상태바 업데이트
@@ -137,7 +139,7 @@ class WheelMoveIntro {
         this.isIntroActive = false;
         this.introSection.classList.remove('active');
         this.introSection.classList.add('cube-rotate-out');
-        console.log('Intro 섹션 비활성화됨 (3D 큐브 좌측 회전)');
+        console.log('Intro 섹션 비활성화됨 (3D 큐브 왼쪽 회전)');
         
         // 완전 비활성화 처리
         setTimeout(() => {
@@ -148,20 +150,39 @@ class WheelMoveIntro {
 
     // intro 섹션 재활성화 (middle에서 돌아올 때 - 3D 큐브 효과)
     reactivateIntro() {
-        this.isIntroActive = true;
-        this.introSection.classList.remove('deactivated', 'cube-rotate-out');
-        this.introSection.classList.add('active', 'cube-rotate-in');
+        console.log('intro 재활성화 시작 - 왼쪽에서 3D 큐브 회전');
         
-        // 마지막 이미지로 설정 (역방향 진입)
+        this.isIntroActive = true;
+        
+        // 1단계: deactivated 해제
+        this.introSection.classList.remove('deactivated');
+        
+        // 2단계: 강제 reflow로 DOM 변경사항 즉시 적용
+        this.introSection.offsetHeight;
+        
+        // 3단계: 이미지와 상태바 먼저 설정 (애니메이션 전에)
         this.currentIndex = this.images.length - 1;
         this.isWheelMoveComplete = true;
         this.showImage(this.currentIndex);
         
-        console.log('intro 재활성화 완료 - 3D 큐브 우측에서 회전하여 마지막 이미지 설정');
+        // 4단계: 약간의 지연 후 애니메이션 시작 (렌더링 완료 대기)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this.introSection.classList.add('cube-rotate-in');
+                console.log('intro 재활성화 완료 - 왼쪽에서 3D 큐브 회전하면서 나타남');
+            });
+        });
         
-        // 애니메이션 완료 후 cube-rotate-in 클래스 제거
+        // 애니메이션 완료 후 cube-rotate-in 제거하고 active 추가
         setTimeout(() => {
             this.introSection.classList.remove('cube-rotate-in');
+            this.introSection.classList.add('active');
+            // 안전장치: 이미지가 제대로 표시되지 않았다면 다시 설정
+            if (!document.querySelector('.wheel-image.active')) {
+                this.showImage(this.currentIndex);
+                console.log('안전장치: wheel-image 재설정됨');
+            }
+            console.log('intro 섹션 3D 큐브 애니메이션 완료, active 상태로 전환');
         }, 1400);
     }
 
@@ -180,17 +201,10 @@ class WheelMoveIntro {
 
     // 역방향 섹션 전환 (middle → intro)
     triggerReverseTransition() {
-        console.log('섹션 역전환 시작: middle → intro');
+        console.log('섹션 역전환 시작: middle → intro (wheelMoveIntro에서 호출됨)');
         
-        // intro 재활성화
+        // intro 재활성화만 처리 (middle 비활성화는 LayeredSectionManager에서 처리)
         this.reactivateIntro();
-        
-        // middle 섹션 비활성화
-        if (window.layeredSectionManager) {
-            window.layeredSectionManager.deactivateMiddleToIntro();
-        } else {
-            console.error('layeredSectionManager가 존재하지 않습니다!');
-        }
     }
 
     // 상태바 업데이트
@@ -250,6 +264,42 @@ window.resetIntroSection = function() {
     if (window.wheelMoveIntro) {
         window.wheelMoveIntro.reset();
     }
+};
+
+// 디버깅용 함수 - intro 섹션 상태 확인
+window.debugIntroSection = function() {
+    if (window.wheelMoveIntro) {
+        const intro = window.wheelMoveIntro.introSection;
+        const activeImage = document.querySelector('.wheel-image.active');
+        
+        console.log('=== Intro Section Debug ===', {
+            isIntroActive: window.wheelMoveIntro.isIntroActive,
+            currentIndex: window.wheelMoveIntro.currentIndex,
+            isWheelMoveComplete: window.wheelMoveIntro.isWheelMoveComplete,
+            introClasses: intro ? intro.className : 'not found',
+            activeImageSrc: activeImage ? activeImage.src : 'no active image',
+            totalImages: window.wheelMoveIntro.images.length,
+            introOpacity: intro ? window.getComputedStyle(intro).opacity : 'unknown',
+            introZIndex: intro ? window.getComputedStyle(intro).zIndex : 'unknown'
+        });
+    }
+};
+
+// 디버깅용 함수 - wheel-image 상태 확인
+window.debugWheelImages = function() {
+    const images = document.querySelectorAll('.wheel-image');
+    console.log('=== Wheel Images Debug ===');
+    images.forEach((img, index) => {
+        const style = window.getComputedStyle(img);
+        console.log(`Image ${index + 1}:`, {
+            src: img.src.split('/').pop(),
+            active: img.classList.contains('active'),
+            opacity: style.opacity,
+            visibility: style.visibility,
+            display: style.display,
+            loaded: img.complete
+        });
+    });
 };
 
 console.log('WheelMoveIntro 컴포넌트 로드 완료'); 

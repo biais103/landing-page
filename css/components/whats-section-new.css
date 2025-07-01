@@ -52,7 +52,7 @@
     transform: translateZ(0);
     opacity: 0; /* 처음에는 숨김 */
     transform-style: preserve-3d;
-    transform-origin: left center; /* 왼쪽을 기준으로 회전 */
+    transform-origin: center center; /* 중앙 기준으로 회전 */
     backface-visibility: hidden; /* 뒷면 숨김 */
     will-change: transform, opacity;
 }
@@ -65,6 +65,7 @@
 
 /* intro 섹션 3D 큐브 전환 - 왼쪽으로 회전하면서 페이드아웃 */
 .whats-section--intro.cube-rotate-out {
+    transform-origin: left center; /* 순방향은 왼쪽 기준 */
     transform: translateX(-100px) translateZ(-300px) rotateY(-95deg) scale(0.75);
     opacity: 0;
     z-index: 1;
@@ -75,24 +76,42 @@
                 filter 1.4s ease-out;
 }
 
-/* intro 섹션이 완전히 비활성화되었을 때 */
+/* intro 섹션이 완전히 비활성화되었을 때 - 왼쪽 회전 위치에서 대기 (수정됨) */
 .whats-section--intro.deactivated {
+    transform-origin: left center; /* 역방향 대기도 왼쪽 기준 */
+    transform: translateX(-100px) translateZ(-300px) rotateY(-95deg) scale(0.75);
     opacity: 0;
     z-index: 1;
     pointer-events: none;
-    visibility: hidden; /* 완전히 숨김 */
+    filter: brightness(0.6) saturate(0.8);
+    /* 역방향 전환을 위해 콘텐츠 유지 */
+    will-change: transform, opacity, z-index;
 }
 
-/* 3D 큐브 역전환 - middle에서 intro로 돌아올 때 */
+/* 3D 큐브 역전환 - middle에서 intro로 돌아올 때 (수정됨) */
 .whats-section--intro.cube-rotate-in {
-    transform: translateZ(0) rotateY(0deg) scale(1);
-    opacity: 1;
-    z-index: 15;
+    z-index: 15 !important; /* !important로 강제 우선순위 */
     pointer-events: auto;
-    filter: brightness(1);
-    transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                filter 1.4s ease-out;
+    transform-origin: left center; /* 역방향도 왼쪽 기준으로 회전 */
+    /* 콘텐츠 가시성 보장 */
+    opacity: 1 !important;
+    visibility: visible !important;
+    /* transition 제거 - animation과 충돌 방지 */
+    animation: intro-cube-rotate-in 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* intro 섹션 3D 큐브 회전 애니메이션 (수정됨) */
+@keyframes intro-cube-rotate-in {
+    0% { 
+        transform: translateX(-100px) translateZ(-300px) rotateY(-95deg) scale(0.75);
+        opacity: 0;
+        filter: brightness(0.6) saturate(0.8);
+    }
+    100% { 
+        transform: translateZ(0) rotateY(0deg) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
 }
 
 /* 첫 번째 섹션 - 두 번째 레이어 */
@@ -131,6 +150,15 @@
     height: 100%;
     position: relative;
     overflow: hidden;
+    z-index: 2; /* 배경 위에 위치 */
+    /* 콘텐츠 가시성 보장 */
+    will-change: opacity, visibility;
+}
+
+/* intro 섹션이 비활성화되었을 때 wheel container 숨김 방지 */
+.whats-section--intro.deactivated .wheel-move-container {
+    opacity: 1; /* 역방향 전환을 위해 유지 */
+    visibility: visible;
 }
 
 /* Wheel 이미지 기본 설정 */
@@ -141,12 +169,17 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    /* transition 제거 - 즉시 전환으로 깜빡거림 방지 */
+    /* 메모리 최적화 */
+    will-change: opacity, visibility;
 }
 
 /* 활성화된 wheel 이미지 */
 .wheel-image.active {
-    display: block;
+    opacity: 1;
+    visibility: visible;
 }
 
 /* 섹션별 배경색 */
@@ -166,6 +199,10 @@
 
 .bg-2 {
     background-color: var(--spectrum-20);
+}
+
+.bg-intro {
+    background-color: var(--color-blue);
 }
 
 /* 타이틀 컨테이너 */
@@ -329,12 +366,22 @@
 
 /* 중간 섹션 3D 큐브 역전환 - 오른쪽으로 회전하면서 사라짐 */
 .whats-section--middle.cube-rotate-out {
-    transform: translateX(100px) translateZ(-300px) rotateY(95deg) scale(0.75);
-    opacity: 0;
-    filter: brightness(0.6) saturate(0.8);
-    transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                opacity 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                filter 1.4s ease-out;
+    /* transition 제거 - animation과 충돌 방지 */
+    animation: middle-cube-rotate-out 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* middle 섹션 3D 큐브 회전 아웃 애니메이션 */
+@keyframes middle-cube-rotate-out {
+    0% { 
+        transform: translateZ(0) rotateY(0deg) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
+    100% { 
+        transform: translateX(100px) translateZ(-300px) rotateY(95deg) scale(0.75);
+        opacity: 0;
+        filter: brightness(0.6) saturate(0.8);
+    }
 }
 
 /* 중간 섹션 배경 */
