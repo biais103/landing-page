@@ -133,11 +133,110 @@
     opacity: 0; /* 처음에는 투명 */
 }
 
-/* 세 번째 섹션 - 맨 뒤 레이어 */
+/* 세 번째 섹션 - 맨 뒤 레이어 (초기 상태: 아래에서 회전) */
 .whats-section--third {
     z-index: 3;
-    transform: translateY(0);
-    opacity: 0; /* 처음에는 투명 */
+    transform: translateY(100px) translateZ(-300px) rotateX(-95deg) scale(0.75);
+    opacity: 0; /* 처음에는 숨김 */
+    transform-style: preserve-3d;
+    transform-origin: center bottom; /* 아래쪽을 기준으로 회전 */
+    backface-visibility: hidden; /* 뒷면 숨김 */
+    will-change: transform, opacity;
+    filter: brightness(0.6) saturate(0.8);
+}
+
+/* 세 번째 섹션 3D 큐브 전환 - 아래에서 회전하면서 나타남 */
+.whats-section--third.cube-rotate-in {
+    z-index: 6 !important; /* second보다 높게 설정 */
+    pointer-events: auto;
+    /* 콘텐츠 가시성 보장 */
+    opacity: 1 !important;
+    visibility: visible !important;
+    /* transition 제거 - animation과 충돌 방지 */
+    animation: third-cube-rotate-in 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 세 번째 섹션 3D 큐브 역전환 - 아래로 회전하면서 사라짐 */
+.whats-section--third.cube-rotate-out {
+    /* transition 제거 - animation과 충돌 방지 */
+    animation: third-cube-rotate-out 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* third 섹션 3D 큐브 회전 인 애니메이션 */
+@keyframes third-cube-rotate-in {
+    0% { 
+        transform: translateY(100px) translateZ(-300px) rotateX(-95deg) scale(0.75);
+        opacity: 0;
+        filter: brightness(0.6) saturate(0.8);
+    }
+    100% { 
+        transform: translateZ(0) rotateX(0deg) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
+}
+
+/* third 섹션 3D 큐브 회전 아웃 애니메이션 */
+@keyframes third-cube-rotate-out {
+    0% { 
+        transform: translateZ(0) rotateX(0deg) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
+    100% { 
+        transform: translateY(100px) translateZ(-300px) rotateX(-95deg) scale(0.75);
+        opacity: 0;
+        filter: brightness(0.6) saturate(0.8);
+    }
+}
+
+/* 두 번째 섹션이 위로 회전하면서 사라지는 효과 (second → third 전환 시) */
+.whats-section--second.cube-rotate-out-up {
+    transform-origin: center top; /* 위쪽을 기준으로 회전 */
+    /* transition 제거 - animation과 충돌 방지 */
+    animation: second-cube-rotate-out-up 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* second 섹션이 위로 회전하면서 사라지는 애니메이션 */
+@keyframes second-cube-rotate-out-up {
+    0% { 
+        transform: translateZ(0) rotateX(0deg) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
+    100% { 
+        transform: translateY(-100px) translateZ(-300px) rotateX(95deg) scale(0.75);
+        opacity: 0;
+        filter: brightness(0.6) saturate(0.8);
+        z-index: 1;
+        pointer-events: none;
+    }
+}
+
+/* 두 번째 섹션이 아래에서 회전하면서 나타나는 효과 (third → second 역전환 시) */
+.whats-section--second.cube-rotate-in-down {
+    z-index: 5 !important; /* !important로 강제 우선순위 */
+    pointer-events: auto;
+    transform-origin: center top; /* 위쪽을 기준으로 회전 */
+    /* 콘텐츠 가시성 보장 */
+    opacity: 1 !important;
+    visibility: visible !important;
+    /* transition 제거 - animation과 충돌 방지 */
+    animation: second-cube-rotate-in-down 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* second 섹션이 아래에서 회전하면서 나타나는 애니메이션 */
+@keyframes second-cube-rotate-in-down {
+    0% { 
+        transform: translateY(-100px) translateZ(-300px) rotateX(95deg) scale(0.75);
+        opacity: 0;
+        filter: brightness(0.6) saturate(0.8);
+    }
+    100% { 
+        transform: translateZ(0) rotateX(0deg) scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
 }
 
 /* 슬라이드 아웃 상태 (기존 first → second 전환용) */
@@ -334,7 +433,7 @@
 
 /* 마지막 이미지에 도달했을 때 파란색으로 변경 */
 .wheel-progress-bar__fill.complete {
-    background-color: var(--color-blue);
+    background-color: var(--color-point);
 }
 
 /* 모바일 대응 */
