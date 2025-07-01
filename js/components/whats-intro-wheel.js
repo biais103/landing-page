@@ -9,6 +9,9 @@ class WheelMoveIntro {
         this.isIntroActive = false;
         this.progressBar = null;
         this.progressFill = null;
+        this.lastImageReachedTime = 0; // 마지막 이미지 도달 시간
+        this.transitionDelay = 800; // 전환 허용까지의 지연 시간 (800ms)
+        this.isTransitionReady = false; // 전환 준비 상태
         this.init();
     }
 
@@ -86,11 +89,23 @@ class WheelMoveIntro {
             // 마지막 이미지에 도달했을 때
             if (this.currentIndex === this.images.length - 1) {
                 this.isWheelMoveComplete = true;
-                console.log('Wheel move 완료 - 다음 스크롤로 섹션 전환');
+                this.lastImageReachedTime = Date.now();
+                this.isTransitionReady = false; // 아직 전환 준비 안됨
+                
+                console.log('Wheel move 완료 - 마지막 이미지에서 잠시 대기 중...');
+                
+                // 지연 시간 후 전환 준비 완료
+                setTimeout(() => {
+                    this.isTransitionReady = true;
+                    console.log('전환 준비 완료 - 이제 스크롤하면 섹션 전환됩니다');
+                }, this.transitionDelay);
             }
-        } else if (this.isWheelMoveComplete) {
-            // 마지막 이미지에서 한 번 더 스크롤 - 섹션 전환
-            this.triggerSectionTransition();
+        } else if (this.isWheelMoveComplete && this.isTransitionReady) {
+            // 마지막 이미지에서 지연 시간 후 스크롤 - 섹션 전환
+            const timeSinceLastImage = Date.now() - this.lastImageReachedTime;
+            if (timeSinceLastImage >= this.transitionDelay) {
+                this.triggerSectionTransition();
+            }
         }
     }
 
@@ -102,6 +117,9 @@ class WheelMoveIntro {
             // 마지막 이미지에서 벗어났으면 완료 상태 해제
             if (this.currentIndex < this.images.length - 1) {
                 this.isWheelMoveComplete = false;
+                this.isTransitionReady = false;
+                this.lastImageReachedTime = 0;
+                console.log('마지막 이미지에서 벗어남 - 전환 상태 초기화');
             }
         }
     }
@@ -163,6 +181,8 @@ class WheelMoveIntro {
         // 3단계: 이미지와 상태바 먼저 설정 (애니메이션 전에)
         this.currentIndex = this.images.length - 1;
         this.isWheelMoveComplete = true;
+        this.isTransitionReady = false; // 재활성화 시 전환 준비 해제
+        this.lastImageReachedTime = 0;
         this.showImage(this.currentIndex);
         
         // 4단계: 약간의 지연 후 애니메이션 시작 (렌더링 완료 대기)

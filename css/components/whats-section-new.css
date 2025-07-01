@@ -508,3 +508,43 @@
     transform: translateY(-100%);
     opacity: 0;
 }
+
+/* middle 섹션 타이틀 글자별 애니메이션 */
+.whats-section--middle .whats-section__title {
+    perspective: 1000px; /* 3D 효과를 위한 원근감 */
+    text-align: center; /* 중앙 정렬 강제 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+/* 개별 글자 초기 상태 */
+.whats-section--middle .title-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(50px) rotateX(-90deg);
+    transform-origin: center bottom;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+    animation-duration: 0.5s; /* 0.6초에서 0.5초로 단축 */
+}
+
+/* 공백 문자 처리 */
+.whats-section--middle .title-char.space {
+    width: 0.5em; /* 공백 너비 */
+}
+
+/* 글자별 등장 애니메이션 */
+@keyframes charReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) rotateX(-90deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+    }
+}
+
+/* 애니메이션 트리거 클래스 */
+.whats-section--middle.title-animated .title-char {
+    animation-name: charReveal;
+}

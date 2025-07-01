@@ -247,6 +247,9 @@ class LayeredSectionManager {
         this.isIntroToMiddleTransitioned = true;
         this.lastTransitionTime = Date.now();
         
+        // middle 섹션 타이틀을 즉시 숨기기 (전환 중 보이지 않도록)
+        this.hideMiddleTitle();
+        
         // middle 섹션 3D 큐브 전환
         this.middleSection.classList.add('cube-rotate-in');
         
@@ -315,6 +318,9 @@ class LayeredSectionManager {
         
         this.isIntroToMiddleTransitioned = false;
         this.lastTransitionTime = Date.now();
+        
+        // middle 섹션 타이틀 숨기기
+        this.hideMiddleTitle();
         
         // middle 섹션 3D 큐브 역전환 (오른쪽으로 회전하면서 사라짐)
         this.middleSection.classList.remove('cube-rotate-in');
@@ -465,6 +471,11 @@ class LayeredSectionManager {
     // intro → middle 전환 완료 콜백
     onIntroToMiddleComplete() {
         console.log('intro → middle 전환 완료');
+        
+        // 전환 완료 후 타이틀 글자별 애니메이션 시작
+        setTimeout(() => {
+            this.animateMiddleTitleChars();
+        }, 100); // 전환 완료 후 100ms 지연으로 단축
     }
 
     // middle → first 전환 완료 콜백
@@ -509,6 +520,88 @@ class LayeredSectionManager {
         });
     }
 
+    // middle 섹션 타이틀 글자별 애니메이션
+    animateMiddleTitleChars() {
+        const middleTitle = this.middleSection.querySelector('.whats-section__title');
+        if (!middleTitle) {
+            console.error('middle 섹션의 타이틀을 찾을 수 없습니다.');
+            return;
+        }
+
+        // 타이틀을 다시 보이게 설정
+        this.showMiddleTitle();
+
+        // 기존 글자 span이 있다면 제거하고 다시 생성
+        this.resetMiddleTitleChars(middleTitle);
+        
+        // 텍스트를 글자별로 분리하여 span으로 감싸기
+        this.splitTextIntoChars(middleTitle);
+        
+        // 애니메이션 트리거
+        this.triggerCharAnimation();
+        
+        console.log('middle 섹션 타이틀 글자별 애니메이션 시작');
+    }
+
+    // 기존 글자 span 초기화
+    resetMiddleTitleChars(titleElement) {
+        // title-animated 클래스 제거
+        this.middleSection.classList.remove('title-animated');
+        
+        // 기존 span 요소들이 있다면 원본 텍스트로 복원
+        if (titleElement.querySelector('.title-char')) {
+            const originalText = titleElement.textContent;
+            titleElement.innerHTML = originalText;
+        }
+    }
+
+    // 텍스트를 글자별 span으로 분리
+    splitTextIntoChars(titleElement) {
+        const text = titleElement.textContent.trim(); // 앞뒤 공백 제거
+        let htmlContent = '';
+        
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const animationDelay = i * 0.06; // 각 글자마다 0.06초씩 지연 (더욱 빠르게)
+            
+            if (char === ' ') {
+                // 공백 문자 처리
+                htmlContent += `<span class="title-char space" style="animation-delay: ${animationDelay}s;">&nbsp;</span>`;
+            } else {
+                // 일반 글자 처리
+                htmlContent += `<span class="title-char" style="animation-delay: ${animationDelay}s;">${char}</span>`;
+            }
+        }
+        
+        titleElement.innerHTML = htmlContent;
+    }
+
+    // 글자별 애니메이션 트리거
+    triggerCharAnimation() {
+        // DOM 업데이트를 위한 짧은 지연
+        requestAnimationFrame(() => {
+            this.middleSection.classList.add('title-animated');
+        });
+    }
+
+    // middle 섹션 타이틀 숨기기
+    hideMiddleTitle() {
+        const middleTitle = this.middleSection.querySelector('.whats-section__title');
+        if (middleTitle) {
+            middleTitle.style.opacity = '0';
+            middleTitle.style.visibility = 'hidden';
+        }
+    }
+
+    // middle 섹션 타이틀 보이기
+    showMiddleTitle() {
+        const middleTitle = this.middleSection.querySelector('.whats-section__title');
+        if (middleTitle) {
+            middleTitle.style.opacity = '1';
+            middleTitle.style.visibility = 'visible';
+        }
+    }
+
     // 전환 상태 리셋 (테스트용)
     resetTransition() {
         this.isTransitioned = false;
@@ -518,13 +611,19 @@ class LayeredSectionManager {
         this.lastTransitionTime = 0;
         
         // 3D 큐브 클래스들도 포함해서 정리
-        this.middleSection.classList.remove('cube-rotate-in', 'cube-rotate-out', 'slide-out');
+        this.middleSection.classList.remove('cube-rotate-in', 'cube-rotate-out', 'slide-out', 'title-animated');
         this.firstSection.classList.remove('slide-out', 'fade-in-from-intro');
         this.secondSection.classList.remove('fade-in', 'cube-rotate-out-up', 'cube-rotate-in-down');
         this.thirdSection.classList.remove('cube-rotate-in', 'cube-rotate-out');
         
         if (this.introSection) {
             this.introSection.classList.remove('active', 'cube-rotate-out', 'cube-rotate-in', 'deactivated');
+        }
+        
+        // middle 섹션 타이틀 초기화
+        const middleTitle = this.middleSection.querySelector('.whats-section__title');
+        if (middleTitle) {
+            this.resetMiddleTitleChars(middleTitle);
         }
         
         console.log('모든 섹션 상태가 리셋되었습니다 (3D 큐브 상하 회전 클래스 포함).');
