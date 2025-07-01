@@ -13,6 +13,12 @@ class LayeredSectionManager {
         this.isMiddleToFirstTransitioned = false; // middle → first 전환 상태
         this.lastTransitionTime = 0; // 마지막 전환 시간
         this.transitionCooldown = 1000; // 전환 쿨다운 시간 (1초)
+        // 마우스 추적 관련 변수들
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.isSecondSectionActive = false;
+        this.secondTitleElement = null;
+        this.colorChangeTimer = null;
         this.init();
     }
 
@@ -29,6 +35,9 @@ class LayeredSectionManager {
             return;
         }
 
+        // second 섹션 타이틀 요소 찾기
+        this.secondTitleElement = this.secondSection.querySelector('.whats-section__title');
+        
         // 이벤트 리스너 설정
         this.setupEventListeners();
         
@@ -238,6 +247,17 @@ class LayeredSectionManager {
                 }
             });
         }
+
+        // 마우스 이동 이벤트 (second 섹션 타이틀 추적용)
+        document.addEventListener('mousemove', (event) => {
+            this.mouseX = event.clientX;
+            this.mouseY = event.clientY;
+            
+            if (this.isSecondSectionActive && this.secondTitleElement) {
+                this.updateSecondTitlePosition();
+                this.changeSecondTitleColor();
+            }
+        });
     }
 
     // intro에서 middle로 전환 (3D 큐브 효과)
@@ -437,6 +457,9 @@ class LayeredSectionManager {
     triggerBackTransition() {
         if (!this.isTransitioned) return;
         
+        // second 섹션에서 벗어날 때 마우스 추적 비활성화
+        this.deactivateSecondSectionMouseTracking();
+        
         this.isTransitioned = false;
         this.lastTransitionTime = Date.now();
         
@@ -495,16 +518,25 @@ class LayeredSectionManager {
 
     // first → second 전환 완료 콜백 (기존)
     onTransitionComplete() {
+        // second 섹션으로 전환 완료 시 마우스 추적 활성화
+        this.activateSecondSectionMouseTracking();
+        
         console.log('first → second 전환 완료');
     }
 
     // second → third 전환 완료 콜백
     onSecondToThirdComplete() {
+        // third 섹션으로 전환 시 마우스 추적 비활성화
+        this.deactivateSecondSectionMouseTracking();
+        
         console.log('second → third 전환 완료');
     }
 
     // third → second 전환 완료 콜백
     onThirdToSecondComplete() {
+        // second 섹션으로 돌아올 때 마우스 추적 재활성화
+        this.activateSecondSectionMouseTracking();
+        
         console.log('third → second 전환 완료');
     }
 
@@ -604,6 +636,9 @@ class LayeredSectionManager {
 
     // 전환 상태 리셋 (테스트용)
     resetTransition() {
+        // 마우스 추적 비활성화
+        this.deactivateSecondSectionMouseTracking();
+        
         this.isTransitioned = false;
         this.isIntroToMiddleTransitioned = false;
         this.isMiddleToFirstTransitioned = false;
@@ -614,6 +649,7 @@ class LayeredSectionManager {
         this.middleSection.classList.remove('cube-rotate-in', 'cube-rotate-out', 'slide-out', 'title-animated');
         this.firstSection.classList.remove('slide-out', 'fade-in-from-intro');
         this.secondSection.classList.remove('fade-in', 'cube-rotate-out-up', 'cube-rotate-in-down');
+        this.thirdSection.classList.remove('fade-in', 'cube-rotate-out-up', 'cube-rotate-in-down');
         this.thirdSection.classList.remove('cube-rotate-in', 'cube-rotate-out');
         
         if (this.introSection) {
@@ -627,6 +663,83 @@ class LayeredSectionManager {
         }
         
         console.log('모든 섹션 상태가 리셋되었습니다 (3D 큐브 상하 회전 클래스 포함).');
+    }
+
+    // 마우스 추적 관련 메서드들
+    
+    // second 섹션 활성화 시 마우스 추적 시작
+    activateSecondSectionMouseTracking() {
+        if (!this.secondTitleElement) return;
+        
+        this.isSecondSectionActive = true;
+        
+        // 타이틀을 화면 중앙에 초기 위치 설정
+        this.secondTitleElement.style.left = '50%';
+        this.secondTitleElement.style.top = '50%';
+        this.secondTitleElement.style.transform = 'translate(-50%, -50%)';
+        
+        console.log('second 섹션 마우스 추적 활성화됨');
+    }
+    
+    // second 섹션 비활성화 시 마우스 추적 중지
+    deactivateSecondSectionMouseTracking() {
+        this.isSecondSectionActive = false;
+        
+        if (this.secondTitleElement) {
+            // 원래 위치로 복원
+            this.secondTitleElement.style.position = '';
+            this.secondTitleElement.style.left = '';
+            this.secondTitleElement.style.top = '';
+            this.secondTitleElement.style.transform = '';
+            this.secondTitleElement.style.zIndex = '';
+        }
+        
+        // 색상 변경 타이머 정리
+        if (this.colorChangeTimer) {
+            clearTimeout(this.colorChangeTimer);
+            this.colorChangeTimer = null;
+        }
+        
+        console.log('second 섹션 마우스 추적 비활성화됨');
+    }
+    
+    // 마우스 위치에 따른 타이틀 위치 업데이트
+    updateSecondTitlePosition() {
+        if (!this.secondTitleElement || !this.isSecondSectionActive) return;
+        
+        // 부드러운 애니메이션을 위해 마우스보다 약간 지연된 움직임
+        const smoothingFactor = 0.1;
+        const targetX = this.mouseX;
+        const targetY = this.mouseY;
+        
+        // 타이틀의 반 크기만큼 오프셋 (중앙 정렬)
+        const offsetX = this.secondTitleElement.offsetWidth / 2;
+        const offsetY = this.secondTitleElement.offsetHeight / 2;
+        
+        this.secondTitleElement.style.left = `${targetX - offsetX}px`;
+        this.secondTitleElement.style.top = `${targetY - offsetY}px`;
+        this.secondTitleElement.style.transform = 'none';
+    }
+    
+    // 랜덤 색상 변경
+    changeSecondTitleColor() {
+        if (!this.secondTitleElement || !this.isSecondSectionActive) return;
+        
+        // 색상 변경 쿨다운 (너무 자주 변경되지 않도록)
+        if (this.colorChangeTimer) return;
+        
+        // 랜덤 HSL 색상 생성
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = 70 + Math.floor(Math.random() * 30); // 70-100%
+        const lightness = 50 + Math.floor(Math.random() * 30);  // 50-80%
+        
+        const randomColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        this.secondTitleElement.style.color = randomColor;
+        
+        // 100ms 쿨다운
+        this.colorChangeTimer = setTimeout(() => {
+            this.colorChangeTimer = null;
+        }, 100);
     }
 }
 

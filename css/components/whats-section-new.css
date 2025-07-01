@@ -548,3 +548,23 @@
 .whats-section--middle.title-animated .title-char {
     animation-name: charReveal;
 }
+
+/* second 섹션 마우스 따라다니는 타이틀 */
+.whats-section--second .whats-section__title {
+    position: fixed;
+    z-index: 1000;
+    pointer-events: none;
+    transition: transform 0.1s ease-out, color 0.2s ease;
+    transform-origin: center center;
+    will-change: transform, color;
+    font-weight: 700;
+    font-size: 3rem;
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* second 섹션이 활성화되었을 때만 마우스 따라다니기 활성화 */
+.whats-section--second.fade-in .whats-section__title {
+    /* 마우스 추적 활성화됨 - JavaScript에서 제어 */
+}
