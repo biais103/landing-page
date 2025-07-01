@@ -19,6 +19,8 @@ class LayeredSectionManager {
         this.isSecondSectionActive = false;
         this.secondTitleElement = null;
         this.colorChangeTimer = null;
+        this.isContentRevealed = false;
+        this.canRevealContent = false;
         this.init();
     }
 
@@ -56,6 +58,10 @@ class LayeredSectionManager {
         // 스크롤 이벤트 (양방향) - intro가 비활성화되었을 때만
         let lastScrollY = 0;
         window.addEventListener('scroll', () => {
+            // 세 번째 섹션에 도달했으면 이벤트 무시하여 기본 스크롤 허용
+            if (this.isSecondToThirdTransitioned) {
+                return;
+            }
             // intro 섹션이 활성화되어 있으면 스크롤 이벤트 무시
             if (window.wheelMoveIntro && window.wheelMoveIntro.isIntroActive) {
                 return;
@@ -110,6 +116,25 @@ class LayeredSectionManager {
 
         // 키보드 이벤트
         document.addEventListener('keydown', (event) => {
+            // 세 번째 섹션 완료 후 키보드 다운 시 main-content로 전환, 업 시 역전환
+            if (this.canRevealContent && !this.isContentRevealed) {
+                if (event.code === 'Space' || event.code === 'ArrowDown') {
+                    event.preventDefault();
+                    this.revealContent();
+                } else if (event.code === 'ArrowUp') {
+                    event.preventDefault();
+                    this.triggerThirdToSecondTransition();
+                }
+                return;
+            }
+            // main-content가 보이는 상태에서 ArrowUp 시 복귀
+            if (this.isContentRevealed) {
+                if (event.code === 'ArrowUp') {
+                    event.preventDefault();
+                    this.revertContent();
+                }
+                return;
+            }
             // intro 섹션이 활성화되어 있으면 키보드 이벤트 무시
             if (window.wheelMoveIntro && window.wheelMoveIntro.isIntroActive) {
                 return;
@@ -157,6 +182,24 @@ class LayeredSectionManager {
 
         // 추가: 마우스 휠 이벤트 (passive: false로 설정)
         document.addEventListener('wheel', (event) => {
+            // 세 번째 섹션 완료 후 휠 다운 시 main-content로 전환, 업 시 역전환
+            if (this.canRevealContent && !this.isContentRevealed) {
+                if (event.deltaY > 0) {
+                    event.preventDefault();
+                    this.revealContent();
+                } else if (event.deltaY < 0) {
+                    this.triggerThirdToSecondTransition();
+                }
+                return;
+            }
+            // main-content가 보이는 상태에서 휠 업 시 복귀
+            if (this.isContentRevealed) {
+                if (event.deltaY < 0) {
+                    event.preventDefault();
+                    this.revertContent();
+                }
+                return;
+            }
             // intro 섹션이 활성화되어 있으면 휠 이벤트 무시
             if (window.wheelMoveIntro && window.wheelMoveIntro.isIntroActive) {
                 return;
@@ -528,7 +571,8 @@ class LayeredSectionManager {
     onSecondToThirdComplete() {
         // third 섹션으로 전환 시 마우스 추적 비활성화
         this.deactivateSecondSectionMouseTracking();
-        
+        // main-content 전환 가능 상태 설정
+        this.canRevealContent = true;
         console.log('second → third 전환 완료');
     }
 
@@ -536,7 +580,6 @@ class LayeredSectionManager {
     onThirdToSecondComplete() {
         // second 섹션으로 돌아올 때 마우스 추적 재활성화
         this.activateSecondSectionMouseTracking();
-        
         console.log('third → second 전환 완료');
     }
 
@@ -740,6 +783,52 @@ class LayeredSectionManager {
         this.colorChangeTimer = setTimeout(() => {
             this.colorChangeTimer = null;
         }, 100);
+    }
+
+    // main-content로 전환 메서드
+    revealContent() {
+        if (this.isContentRevealed) return;
+        // 한 번 전환 후 추가 전환 막음
+        this.isContentRevealed = true;
+        this.canRevealContent = false;
+        // main-content 미리 표시
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.style.display = 'block';
+            requestAnimationFrame(() => { mainContent.style.opacity = '1'; });
+        }
+        // 부드러운 스크롤로 main-content로 이동
+        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+        // benefit-section 가시화 클래스 추가 (스크롤 후)
+        setTimeout(() => {
+            const benefitHeadline = document.querySelector('.benefit-headline');
+            benefitHeadline?.classList.add('visible');
+            const benefitContainer = document.querySelector('.benefit-container');
+            benefitContainer?.classList.add('visible');
+        }, 500);
+    }
+
+    // 메인 컨텐츠에서 위로 스크롤 시 layered section으로 복귀
+    revertContent() {
+        if (!this.isContentRevealed) return;
+        // benefit-section 가시화 클래스 제거
+        const benefitHeadline = document.querySelector('.benefit-headline');
+        benefitHeadline?.classList.remove('visible');
+        const benefitContainer = document.querySelector('.benefit-container');
+        benefitContainer?.classList.remove('visible');
+        // 부드러운 스크롤로 최상단(레이어 섹션)으로 이동
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // 스크롤 후 main-content 숨기기 및 상태 리셋
+        setTimeout(() => {
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.style.opacity = '0';
+                setTimeout(() => { mainContent.style.display = 'none'; }, 300);
+            }
+            this.isContentRevealed = false;
+            // 컨텐츠 복귀 후 다시 reveal 불가능 상태로 리셋
+            this.canRevealContent = false;
+        }, 500);
     }
 }
 
