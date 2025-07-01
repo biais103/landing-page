@@ -568,3 +568,25 @@
 .whats-section--second.fade-in .whats-section__title {
     /* 마우스 추적 활성화됨 - JavaScript에서 제어 */
 }
+
+/* third 섹션 무지개 그라데이션 흘러가는 타이틀 */
+.whats-section--third .whats-section__title {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd);
+    background-size: 400% 400%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 3s ease infinite;
+    font-weight: 700;
+    position: relative;
+}
+
+/* 무지개 그라데이션 이동 애니메이션 */
+@keyframes gradientMove {
+    0%, 100% { 
+        background-position: 0% 50%; 
+    }
+    50% { 
+        background-position: 100% 50%; 
+    }
+}
