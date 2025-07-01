@@ -7,6 +7,8 @@ class WheelMoveIntro {
         this.isWheelMoveComplete = false;
         this.introSection = null;
         this.isIntroActive = false;
+        this.progressBar = null;
+        this.progressFill = null;
         this.init();
     }
 
@@ -14,9 +16,16 @@ class WheelMoveIntro {
         // intro 섹션과 이미지들 찾기
         this.introSection = document.querySelector('.whats-section--intro');
         this.images = document.querySelectorAll('.wheel-image');
+        this.progressBar = document.querySelector('.wheel-progress-bar');
+        this.progressFill = document.querySelector('.wheel-progress-bar__fill');
         
         if (!this.introSection || !this.images.length) {
             console.error('intro 섹션 또는 wheel 이미지들을 찾을 수 없습니다.');
+            return;
+        }
+
+        if (!this.progressBar || !this.progressFill) {
+            console.error('progress bar 요소들을 찾을 수 없습니다.');
             return;
         }
 
@@ -109,7 +118,8 @@ class WheelMoveIntro {
             this.images[index].classList.add('active');
         }
         
-        console.log(`이미지 전환: ${index + 1}/${this.images.length}`);
+        // 상태바 업데이트
+        this.updateProgressBar();
     }
 
     // intro 섹션 활성화
@@ -122,70 +132,85 @@ class WheelMoveIntro {
         console.log('Intro 섹션 활성화됨');
     }
 
-    // intro 섹션 비활성화
+    // intro 섹션 비활성화 (3D 큐브 효과)
     deactivateIntro() {
         this.isIntroActive = false;
         this.introSection.classList.remove('active');
-        this.introSection.classList.add('fade-out');
-        console.log('Intro 섹션 비활성화됨');
+        this.introSection.classList.add('cube-rotate-out');
+        console.log('Intro 섹션 비활성화됨 (3D 큐브 좌측 회전)');
         
         // 완전 비활성화 처리
         setTimeout(() => {
             this.introSection.classList.add('deactivated');
-            this.introSection.classList.remove('fade-out');
-        }, 800);
+            this.introSection.classList.remove('cube-rotate-out');
+        }, 1400); // 1.4초로 연장
     }
 
-    // intro 섹션 재활성화 (first에서 돌아올 때)
+    // intro 섹션 재활성화 (middle에서 돌아올 때 - 3D 큐브 효과)
     reactivateIntro() {
-        console.log('[DEBUG] reactivateIntro() 시작');
-        console.log('[DEBUG] introSection 존재:', !!this.introSection);
-        console.log('[DEBUG] images 개수:', this.images ? this.images.length : 0);
-        
         this.isIntroActive = true;
-        this.introSection.classList.remove('deactivated', 'fade-out');
-        this.introSection.classList.add('active');
+        this.introSection.classList.remove('deactivated', 'cube-rotate-out');
+        this.introSection.classList.add('active', 'cube-rotate-in');
         
         // 마지막 이미지로 설정 (역방향 진입)
         this.currentIndex = this.images.length - 1;
         this.isWheelMoveComplete = true;
         this.showImage(this.currentIndex);
         
-        console.log('[DEBUG] intro 재활성화 완료 - 이미지:', this.currentIndex + 1);
+        console.log('intro 재활성화 완료 - 3D 큐브 우측에서 회전하여 마지막 이미지 설정');
+        
+        // 애니메이션 완료 후 cube-rotate-in 클래스 제거
+        setTimeout(() => {
+            this.introSection.classList.remove('cube-rotate-in');
+        }, 1400);
     }
 
     // 섹션 전환 트리거
     triggerSectionTransition() {
-        console.log('섹션 전환 시작: intro → first');
+        console.log('섹션 전환 시작: intro → middle');
         
         // intro 페이드아웃
         this.deactivateIntro();
         
-        // first 섹션 페이드인
+        // middle 섹션 페이드인
         if (window.layeredSectionManager) {
-            window.layeredSectionManager.activateFirstFromIntro();
+            window.layeredSectionManager.activateMiddleFromIntro();
         }
     }
 
-    // 역방향 섹션 전환 (first → intro)
+    // 역방향 섹션 전환 (middle → intro)
     triggerReverseTransition() {
-        console.log('[DEBUG] wheelMoveIntro.triggerReverseTransition() 시작');
-        console.log('[DEBUG] 현재 isIntroActive:', this.isIntroActive);
-        console.log('[DEBUG] layeredSectionManager 존재:', !!window.layeredSectionManager);
+        console.log('섹션 역전환 시작: middle → intro');
         
         // intro 재활성화
-        console.log('[DEBUG] intro 재활성화 중...');
         this.reactivateIntro();
         
-        // first 섹션 비활성화
+        // middle 섹션 비활성화
         if (window.layeredSectionManager) {
-            console.log('[DEBUG] first 섹션 비활성화 중...');
-            window.layeredSectionManager.deactivateFirstToIntro();
+            window.layeredSectionManager.deactivateMiddleToIntro();
         } else {
-            console.error('[ERROR] window.layeredSectionManager가 존재하지 않습니다!');
+            console.error('layeredSectionManager가 존재하지 않습니다!');
+        }
+    }
+
+    // 상태바 업데이트
+    updateProgressBar() {
+        if (!this.progressFill || !this.images.length) return;
+        
+        // 현재 진행도 계산 (1부터 시작하므로 +1)
+        const progress = ((this.currentIndex + 1) / this.images.length) * 100;
+        
+        // 상태바 width 업데이트
+        this.progressFill.style.width = `${progress}%`;
+        
+        // 마지막 이미지인 경우 완료 클래스 추가
+        if (this.currentIndex === this.images.length - 1) {
+            this.progressFill.classList.add('complete');
+        } else {
+            this.progressFill.classList.remove('complete');
         }
         
-        console.log('[DEBUG] wheelMoveIntro.triggerReverseTransition() 완료');
+        // console.log(`상태바 업데이트: ${this.currentIndex + 1}/${this.images.length} (${progress.toFixed(1)}%)`);
     }
 
     // 리셋 (테스트용)
