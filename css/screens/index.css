@@ -11,17 +11,3 @@
     height: 100%;
     margin: 0 auto;
 }
-
-.main-content {
-    width: 100vw;
-    height: 100vh;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.main-content__container {
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-}
