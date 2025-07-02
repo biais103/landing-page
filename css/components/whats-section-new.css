@@ -1,13 +1,15 @@
 /* 새로운 Whats Section Component - 겹치는 레이어 구조 */
 
 .main-screen__container {
-    position: relative;
+    position: sticky;
+    top: 60px; /* 헤더 높이만큼 오프셋 */
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 60px); /* 헤더 높이를 뺀 전체 화면 높이 */
     overflow: hidden; /* 슬라이드 효과를 위해 */
     perspective: 1500px; /* 더 강한 3D 효과 */
     perspective-origin: center center;
     transform-style: preserve-3d;
+    z-index: 10; /* sticky 요소가 다른 요소 위에 표시되도록 */
 }
 
 /* 모든 섹션을 같은 위치에 겹치게 배치 */
@@ -16,7 +18,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%; /* 부모 컨테이너(calc(100vh - 60px))에 맞춤 */
     transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
                 opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
