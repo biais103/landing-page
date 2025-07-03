@@ -1,14 +1,18 @@
 .main-screen {
-    width: 100vw;
+    width: 100%;
+    max-width: 100vw;
     height: 100vh;
     display: none;
     opacity: 0;
     transition: opacity 0.5s ease;
+    overflow-x: hidden;
 }
 
 .main-screen__container {
     width: 100%;
+    max-width: 100%;
     height: 100%;
     margin: 0 auto;
+    overflow-x: hidden;
 }
 
