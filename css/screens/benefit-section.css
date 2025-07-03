@@ -1,0 +1,420 @@
+/* Benefit Section - Compare Static vs Interactive */
+.benefit-section {
+    position: relative;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 20px 20px 100px 20px;
+    background: var(--spectrum-20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    scroll-margin-top: 60px; /* 고정 헤더 높이만큼 오프셋 추가 */
+}
+
+/* Apple-style Headline */
+.benefit-headline {
+    max-width: var(--global-responsive-content-max-width);
+    width: 100%;
+    text-align: center;
+    margin-bottom: 120px;
+    opacity: 0;
+    transform: translateY(60px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.benefit-headline.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.benefit-headline__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.3;
+    color: white;
+    margin: 0;
+    background: linear-gradient(135deg, white 0%, #e5e7eb 50%, #9ca3af 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+    position: relative;
+}
+
+.benefit-headline__title-pulse-scale {
+    display: inline-block;
+    color: white;
+    -webkit-text-fill-color: currentColor;
+    background: none;
+    animation: pulseScale 2s ease-in-out infinite;
+}
+
+@keyframes pulseScale {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+        color: white;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+        color: var(--color-point);
+    }
+}
+
+.benefit-headline__title::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.benefit-headline.visible .benefit-headline__title::after {
+    opacity: 1;
+}
+
+/* Subtle animation for the headline */
+@keyframes subtleFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+.benefit-headline__title {
+    animation: subtleFloat 6s ease-in-out infinite;
+}
+
+.benefit-container {
+    max-width: var(--global-responsive-content-super-width);
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(80px);
+    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.benefit-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Left Side - Static Website */
+.benefit-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    background: rgba(30, 30, 30, 0.5);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.benefit-left__title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+}
+
+.benefit-left__model {
+    width: 100%;
+    max-width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    border: 1px solid rgb(255, 255, 255);
+}
+
+.static-model-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.static-chair-image {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+}
+
+
+/* Right Side - Interactive Website */
+.benefit-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    background: rgba(21, 47, 88, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.1);
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* 그라디언트 테두리 */
+.benefit-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    background: rgba(21, 47, 88, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.1);
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Apple 스타일 그라디언트 테두리 */
+.benefit-right::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: linear-gradient(135deg,
+        #007aff,  /* 파랑 */
+        #5856d6,  /* 보라 */
+        #ff2d55,  /* 핑크 */
+        #ff9500   /* 오렌지 */
+    );
+    background-size: 300% 300%;
+    border-radius: 20px;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+
+    pointer-events: none;
+    z-index: -1;
+    animation: appleBorderFlow 6s ease infinite;
+}
+
+/* 그라디언트 흐름 애니메이션 */
+@keyframes appleBorderFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+
+
+.benefit-right__title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 20px var(--spectrum-20);
+    background: linear-gradient(45deg,#007bff, #5856d6, #ff2d53, #ff9500);
+    background-size: 400% 400%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 3s ease infinite;
+}
+
+@keyframes gradientMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.benefit-right__content {
+    width: 100%;
+    max-width: 400px;
+    height: 400px;
+    position: relative;
+    background: #b1a99e;
+    border-radius: 15px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    overflow: hidden;
+}
+
+/* 3D Model Styles for Benefit Section */
+.benefit-right .rotate-3d__model-container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.benefit-right .rotate-3d__instruction {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 400;
+    z-index: 4;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.benefit-container.visible .rotate-3d__instruction {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.benefit-right .rotate-3d__model {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+.benefit-right .rotate-3d__model:active {
+    cursor: grabbing;
+}
+
+.benefit-right .rotate-3d__footer {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    z-index: 3;
+}
+
+.benefit-right .rotate-3d__footer-column {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: white;
+}
+
+.benefit-right .rotate-3d__footer-column:first-child {
+    text-align: left;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .benefit-headline {
+        margin-bottom: 60px;
+    }
+    
+    .benefit-headline__title {
+        font-size: clamp(1.8rem, 4.5vw, 3rem);
+    }
+    
+    .benefit-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .benefit-description {
+        margin-top: 40px;
+    }
+    
+    .benefit-description__to-feature {
+        margin-top: 60px;
+    }
+    
+    .benefit-left,
+    .benefit-right {
+        padding: 30px;
+    }
+    
+    .benefit-left__model,
+    .benefit-right__content {
+        height: 380px;
+    }
+}
+
+@media (max-width: 768px) {
+    .benefit-section {
+        padding: 60px 16px;
+    }
+    
+    .benefit-headline {
+        margin-bottom: 40px;
+    }
+    
+    .benefit-headline__title {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        line-height: 1.2;
+    }
+    
+         .benefit-headline__title::after {
+        bottom: -15px;
+    }
+    
+    .benefit-container {
+        gap: 30px;
+    }
+    
+    .benefit-left,
+    .benefit-right {
+        padding: 20px;
+    }
+    
+    .benefit-left__model,
+    .benefit-right__content {
+        height: 320px;
+    }
+    
+    .benefit-right .rotate-3d__instruction {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        top: 10px;
+    }
+    
+    .benefit-description {
+        margin-top: 30px;
+    }
+    
+    .benefit-description__text {
+        padding: 14px 32px;
+        font-size: 1rem;
+    }
+    
+    .benefit-description__to-feature {
+        margin-top: 50px;
+    }
+    
+    .scroll-arrow__icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .scroll-arrow__text {
+        font-size: 0.8rem;
+    }
+}
+

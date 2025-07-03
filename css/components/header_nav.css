@@ -39,7 +39,9 @@
 .header-nav__list {
   display: flex;
   list-style: none;
-  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
 }
 
 .header-nav__item {
@@ -50,15 +52,26 @@
   text-decoration: none;
   color: var(--color-gray);
   font-weight: 500;
-  font-size: 18px;
+  font-size: 1.2rem;
   padding: 5px 10px;
   transition: all 0.3s ease;
 }
 
-.header-nav__link:hover {
+#contact-nav {
   color: var(--color-yellow);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.header-nav__link:hover {
+  color: var(--color-blue);
   transform: translateY(-2px);
-  font-weight: 600;
+  font-weight: 900;
+}
+
+#contact-nav:hover {
+  color: var(--color-blue);
+  font-weight: 900;
 }
 
 .header-nav__link:active {

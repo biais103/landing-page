@@ -1,15 +1,14 @@
 /* 새로운 Whats Section Component - 겹치는 레이어 구조 */
 
 .main-screen__container {
-    position: sticky;
-    top: 60px; /* 헤더 높이만큼 오프셋 */
+    position: relative;
     width: 100%;
     height: calc(100vh - 60px); /* 헤더 높이를 뺀 전체 화면 높이 */
     overflow: hidden; /* 슬라이드 효과를 위해 */
     perspective: 1500px; /* 더 강한 3D 효과 */
     perspective-origin: center center;
     transform-style: preserve-3d;
-    z-index: 10; /* sticky 요소가 다른 요소 위에 표시되도록 */
+    z-index: 10;
 }
 
 /* 모든 섹션을 같은 위치에 겹치게 배치 */
@@ -330,6 +329,12 @@
     pointer-events: none; /* 격자 클릭 방해 안하도록 */
 }
 
+/* third 섹션의 content는 세로 배치 */
+.whats-section--third .whats-section__content {
+    flex-direction: column;
+    gap: 60px; /* 타이틀과 버튼 사이 간격 */
+}
+
 .whats-section__content * {
     pointer-events: auto; /* 콘텐츠는 클릭 가능하게 */
 }
@@ -342,6 +347,11 @@
     color: #ffffff;
     transform: translateY(-20%);
     z-index: 4;
+}
+
+/* third 섹션의 타이틀은 transform 제거 (flexbox로 정렬) */
+.whats-section--third .whats-section__title {
+    transform: none;
 }
 
 /* 폴짝 점프 + 손흔들기 텍스트 효과 */
@@ -571,24 +581,58 @@
     /* 마우스 추적 활성화됨 - JavaScript에서 제어 */
 }
 
-/* third 섹션 무지개 그라데이션 흘러가는 타이틀 */
+/* third 섹션 네온 글로우 + 물결 효과 타이틀 */
 .whats-section--third .whats-section__title {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd);
-    background-size: 400% 400%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientMove 3s ease infinite;
     font-weight: 700;
     position: relative;
+    display: inline-block;
 }
 
-/* 무지개 그라데이션 이동 애니메이션 */
-@keyframes gradientMove {
-    0%, 100% { 
-        background-position: 0% 50%; 
+/* 네온 글로우 + 물결 효과를 위한 개별 글자 스타일 */
+.neon-wave-letter {
+    display: inline-block;
+    color: #fff;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 15px #0073e6,
+        0 0 20px #0073e6,
+        0 0 35px #0073e6,
+        0 0 40px #0073e6;
+    animation: 
+        wave 2s ease-in-out infinite,
+        neonFlicker 2s ease-in-out infinite alternate;
+    transform-origin: center bottom;
+}
+
+/* 물결 효과 애니메이션 */
+@keyframes wave {
+    0%, 100% {
+        transform: translateY(0px);
     }
-    50% { 
-        background-position: 100% 50%; 
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* 네온 글로우 깜박임 효과 */
+@keyframes neonFlicker {
+    0% {
+        text-shadow: 
+            0 0 5px #fff,
+            0 0 10px #fff,
+            0 0 15px #0073e6,
+            0 0 20px #0073e6,
+            0 0 35px #0073e6,
+            0 0 40px #0073e6;
+    }
+    100% {
+        text-shadow: 
+            0 0 2px #fff,
+            0 0 5px #fff,
+            0 0 8px #0073e6,
+            0 0 12px #0073e6,
+            0 0 20px #0073e6,
+            0 0 25px #0073e6;
     }
 }

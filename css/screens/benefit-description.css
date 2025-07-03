@@ -1,0 +1,76 @@
+/* Benefit Description */
+.benefit-description-section {
+    position: relative;
+    min-height: 40vh;
+    box-sizing: border-box;
+    padding: 20px;
+    background: var(--color-blue);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    scroll-margin-top: 60px; /* 고정 헤더 높이만큼 오프셋 추가 */
+}
+
+.benefit-description {
+    max-width: var(--global-responsive-content-max-width);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.benefit-description.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.benefit-description__text {
+    display: inline-block;
+    padding: 16px 40px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-radius: 50px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    cursor: default;
+    animation: benefitDescriptionFlow 4s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.benefit-description__text::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes benefitDescriptionFlow {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+    50% {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 12px 48px rgba(59, 130, 246, 0.4);
+        background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}

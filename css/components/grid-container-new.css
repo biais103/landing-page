@@ -30,9 +30,6 @@
     0% {
         background-color: var(--spectrum-80); /* 명도 95% */
     }
-    50% {
-        background-color: var(--spectrum-mid); /* 중간에 원래색 */
-    }
     100% {
         background-color: var(--spectrum-20); /* 명도 5% */
     }

@@ -1,6 +1,6 @@
 .main-screen {
     width: 100vw;
-    min-height: 200vh; /* sticky 효과가 작동하도록 충분한 높이 제공 */
+    height: 100vh;
     display: none;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -12,7 +12,3 @@
     margin: 0 auto;
 }
 
-/* 스크롤 스페이서 - 마지막 섹션이 완전히 표시될 수 있도록 */
-.whats-scroll-spacer {
-    height: 100vh;
-}

@@ -1,0 +1,15 @@
+/* intro 강제 숨김 클래스 */
+.intro-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+/* main-screen 강제 표시 클래스 */
+.main-screen-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}

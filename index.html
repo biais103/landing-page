@@ -2,13 +2,9 @@
 <html lang="ko">
 <head>
     <link rel="stylesheet" href="css/styles.css">
-    <!-- 새로운 CSS 파일들 추가 -->
-    <link rel="stylesheet" href="css/components/whats-section-new.css">
-    <link rel="stylesheet" href="css/components/grid-container-new.css">
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인터랙티브 웹사이트</title>
+    <title>인터랙티브 웹사이트 제작 서비스</title>
     
     <!-- Importmap을 사용하여 모듈 이름을 URL로 매핑 -->
     <script type="importmap">
@@ -54,22 +50,22 @@
         <nav class="header-nav__nav">
             <ul class="header-nav__list">
                 <li class="header-nav__item">
-                    <a href="#whats" class="header-nav__link">What's</a>
+                    <a href="#main-screen" class="header-nav__link">What's</a>
                 </li>
                 <li class="header-nav__item">
-                    <a href="#benefit-1" class="header-nav__link">Benefit</a>
+                    <a href="page.html" class="header-nav__link">Benefit</a>
                 </li>
                 <li class="header-nav__item">
                     <a href="#features" class="header-nav__link">Features</a>
                 </li>
-                <li class="header-nav__item">
-                    <a href="#contact" class="header-nav__link">Contact</a>
+                <li class="header-nav__item" id="contact-nav">
+                    <a href="#contact" class="header-nav__link" id="contact-nav">Contact</a>
                 </li>
             </ul>
         </nav>
     </header>
  
-    <main class="main-screen">
+    <main class="main-screen" id="main-screen">
         <div class="main-screen__container">
             <!-- intro 섹션 - wheel move 효과 -->
             <section class="whats-section whats-section--intro">
@@ -291,66 +287,36 @@
             <section class="whats-section whats-section--third">
                 <div class="whats-section__bg bg-3"></div>
                 <div class="whats-section__content">
-                    <h1 class="whats-section__title">인터랙티브 웹사이트를 제작합니다.</h1>
-                </div>
-                <div class="scroll-arrow__container">
-                    <div class="scroll-arrow__wrapper">
-                        <div class="scroll-arrow__icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7 13L12 18L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M7 6L12 11L17 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="scroll-arrow__text">Scroll</div>
+                    <h1 class="whats-section__title">인터랙티브 웹사이트.</h1>
+                    <!-- Keynote 스타일 인터랙티브 버튼 -->
+                    <div class="keynote-button-container">
+                        <button class="keynote-button" id="learn-more-btn">
+                            <span class="keynote-button__text">더 알아보기</span>
+                            <div class="keynote-button__glow"></div>
+                            <div class="keynote-button__particles">
+                                <div class="particle"></div>
+                                <div class="particle"></div>
+                                <div class="particle"></div>
+                                <div class="particle"></div>
+                                <div class="particle"></div>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </section>
-            <!-- 스크롤 스페이서 - 각 섹션을 위한 스크롤 영역 확보 -->
-            <div class="whats-scroll-spacer"></div>
         </div>
-        <!-- Benefit 섹션 -->
-        <section class="benefit-section" id="benefit-1">
-            <div class="benefit-headline">
-                <h2 class="benefit-headline__title">
-                    둘 중 어느 곳에 시선이 머무르시나요?
-                </h2>
-            </div>
-            <div class="benefit-container">
-                <div class="benefit-left">
-                    <h2 class="benefit-left__title">일반적인 웹사이트</h2>
-                    <div class="benefit-left__model">
-                        <div class="static-model-placeholder">
-                            <img src="images/01-index-images/02-static-chair.jpg" alt="정적 이미지" class="static-chair-image">
-                        </div>
-                    </div>
-                </div>
-                <div class="benefit-right">
-                    <h2 class="benefit-right__title">인터랙티브 웹사이트</h2>
-                    <div class="benefit-right__content">
-                        <!-- 3D 모델 표시 영역 -->
-                        <div class="rotate-3d__model-container">
-                            <div class="rotate-3d__instruction">마우스 드래그 및 스크롤 해보세요</div>
-                            <div class="rotate-3d__model" id="rotate-3d__model"></div>
-                        </div>
-
-                         <!-- 푸터 정보 영역 -->
-                        <div class="rotate-3d__footer">
-                            <div class="rotate-3d__footer-column">2025.06.19</div>
-                            <div class="rotate-3d__footer-column">BIAIS</div>
-                            <div class="rotate-3d__footer-column">Interactive</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
+
+
 
     <!-- ES 모듈 방식으로 분리된 JS 파일 로드 -->
     <script type="module" src="./js/intro.js"></script>
-    <script type="module" src="./js/components/rotate-3d.js"></script>
     <script src="./js/components/rotate-overlay.js"></script>
+    <script src="./js/components/header-nav.js"></script>
     <script src="./js/components/grid-container.js"></script>
     <script src="./js/components/whats-section-new.js"></script>
     <script src="./js/components/whats-intro-wheel.js"></script>
+    <script type="module" src="./js/components/neon-wave-text.js"></script>
+    <script type="module" src="./js/components/keynote-button.js"></script>
 </body>
 </html>

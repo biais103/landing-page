@@ -4,20 +4,14 @@
 
 /* Components */
 @import "components/header_nav.css";
-@import "components/feature.css";
 @import "components/rotate-3d.css";
-@import "components/cosmic-breathing-star.css";
-@import "components/whats-section-new.css";
-@import "components/whats-scroll-arrow.css";
-@import "components/grid-container-new.css";
-
-@import "components/keynote-button.css";
-
 
 /* Screens */
-@import "screens/index.css";
-@import "screens/intro.css";
 @import "screens/rotate-overlay.css";
+@import "screens/benefit-section.css";
+@import "screens/benefit-description.css";
+@import "screens/feature.css";
+@import "screens/contact.css";
 
 html {
   /* scroll-behavior: smooth; */ /* 딱딱한 스냅을 위해 제거 */
@@ -32,4 +26,15 @@ body {
     color: white;
     background-color: black;
     padding-top: 60px; /* 고정 헤더 높이만큼 패딩 추가 */
+}
+
+.main-screen {
+  width: 100vw;
+  height: 100vh;
+}
+
+.main-screen__container {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
 }

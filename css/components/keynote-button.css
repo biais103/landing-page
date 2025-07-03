@@ -1,0 +1,226 @@
+/* Keynote 스타일 인터랙티브 버튼 */
+.keynote-button-container {
+    /* flexbox 레이아웃에서 자동 배치되므로 position 제거 */
+    display: flex;
+    justify-content: center;
+    z-index: 20;
+}
+
+.keynote-button {
+    position: relative;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    outline: none;
+    user-select: none;
+}
+
+.keynote-button__text {
+    position: relative;
+    z-index: 3;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+/* 글로우 효과 */
+.keynote-button__glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        var(--spectrum-80) 0%, 
+        transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 파티클 효과 */
+.keynote-button__particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    animation: particleFloat 2s ease-in-out infinite;
+}
+
+.particle:nth-child(1) {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.particle:nth-child(2) {
+    top: 30%;
+    right: 25%;
+    animation-delay: 0.2s;
+}
+
+.particle:nth-child(3) {
+    bottom: 25%;
+    left: 30%;
+    animation-delay: 0.4s;
+}
+
+.particle:nth-child(4) {
+    bottom: 20%;
+    right: 20%;
+    animation-delay: 0.6s;
+}
+
+.particle:nth-child(5) {
+    top: 50%;
+    left: 50%;
+    animation-delay: 0.8s;
+}
+
+/* 호버 효과 */
+.keynote-button:hover {
+    transform: translateY(-2px);
+    border-color: var(--spectrum-80);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px var(--spectrum-80),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.keynote-button:hover .keynote-button__glow {
+    opacity: 0.3;
+}
+
+.keynote-button:hover .keynote-button__text {
+    color: #ffffff;
+    text-shadow: 0 0 10px var(--spectrum-80);
+}
+
+.keynote-button:hover .particle {
+    animation: none;
+    opacity: 0;
+}
+
+/* 클릭 효과 */
+.keynote-button:active {
+    transform: translateY(0);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 파티클 애니메이션 */
+@keyframes particleFloat {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.2);
+    }
+}
+
+/* 펄스 효과 */
+.keynote-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50px;
+    background: linear-gradient(135deg, 
+        color-mix(in srgb, var(--color-point) 10%, transparent) 0%, 
+        color-mix(in srgb, var(--color-point) 5%, transparent) 100%);
+    opacity: 0;
+    animation: pulse 3s ease-in-out infinite;
+    z-index: 0;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* 리플 효과 */
+.keynote-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    z-index: 1;
+}
+
+.keynote-button:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .whats-section--third .whats-section__content {
+        gap: 40px; /* 모바일에서 간격 줄이기 */
+    }
+    
+    .keynote-button {
+        padding: 14px 28px;
+    }
+    
+    .keynote-button__text {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .whats-section--third .whats-section__content {
+        gap: 30px; /* 더 작은 화면에서 간격 더 줄이기 */
+    }
+    
+    .keynote-button {
+        padding: 12px 24px;
+    }
+    
+    .keynote-button__text {
+        font-size: 14px;
+    }
+} 
