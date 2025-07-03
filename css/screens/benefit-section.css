@@ -272,7 +272,7 @@
     left: 50%;
     transform: translateX(-50%) translateY(-10px);
     color: white;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 400;
     z-index: 4;
     text-align: center;

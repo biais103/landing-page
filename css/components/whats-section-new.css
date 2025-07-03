@@ -387,8 +387,8 @@
     animation-delay: 0.5s; /* 섹션 전환 후 0.5초 뒤에 시작 */
 }
 
-/* 스크롤 화살표 */
-.scroll-arrow__container {
+/* 스크롤 화살표 - intro 섹션 제외 */
+.whats-section:not(.whats-section--intro) .scroll-arrow__container {
     position: absolute;
     bottom: 100px;
     left: 50%;
@@ -408,28 +408,35 @@
     transition: opacity 0.3s ease;
 }
 
-.scroll-arrow__icon:hover {
+
+/* Intro Bottom UI Container - wheel-progress-bar와 scroll-arrow__container를 같은 레벨로 관리 */
+.intro-bottom-ui {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column; /* 순서 그대로: wheel-progress-bar 위, scroll-arrow 아래 */
+    align-items: center;
+    gap: 20px;
+    z-index: 15;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* intro 섹션이 활성화되었을 때 하단 UI 표시 */
+.whats-section--intro.active .intro-bottom-ui {
     opacity: 1;
 }
 
-/* Wheel Progress Bar - 이미지 전환 상태바 */
+/* Wheel Progress Bar - 이미지 전환 상태바 (수정됨) */
 .wheel-progress-bar {
-    position: absolute;
-    bottom: 200px; /* scroll-arrow__container 위에 위치 */
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative; /* fill의 absolute 위치 기준 */
     width: 300px;
     height: 4px;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 2px;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease;
     overflow: hidden;
-}
-
-.whats-section--intro.active .wheel-progress-bar {
-    opacity: 1;
 }
 
 .wheel-progress-bar__fill {
@@ -448,18 +455,74 @@
     background-color: var(--color-point);
 }
 
+/* intro 섹션의 scroll-arrow__icon */
+.intro-bottom-ui .scroll-arrow__icon {
+    color: whitesmoke;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(96, 165, 250, 0.1);
+    border: 2px solid rgba(96, 165, 250, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    animation: bounceUpDown 2s ease-in-out infinite;
+}
+
+/* intro 섹션의 scroll-arrow__text */
+.intro-bottom-ui .scroll-arrow__text {
+    color: whitesmoke;
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+
+/* 이미지 깜박거림 방지 - 강제 설정 */
+.wheel-image {
+    transition: none !important;
+    transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+}
+
+.wheel-image.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: none !important;
+}
+
+/* bounceUpDown 애니메이션 정의 */
+@keyframes bounceUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
 /* 모바일 대응 */
 @media (max-width: 768px) {
+    .intro-bottom-ui {
+        bottom: 30px;
+        gap: 16px;
+    }
+    
     .wheel-progress-bar {
         width: 250px;
-        bottom: 100px;
     }
 }
 
 @media (max-width: 480px) {
+    .intro-bottom-ui {
+        bottom: 20px;
+        gap: 12px;
+    }
+    
     .wheel-progress-bar {
         width: 200px;
-        bottom: 80px;
     }
 }
 
